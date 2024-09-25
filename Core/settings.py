@@ -161,6 +161,10 @@ MEDIA_ROOT = MEDIA_DIR
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# LOGIN_URL = '/signin/'
+
+# LOGIN_REDIRECT_URL = 'App_Auth/signin'
+# LOGOUT_REDIRECT_URL = 'App_Auth/signout'
 
 # from datetime import timedelta
 # AUTO_LOGOUT = {
