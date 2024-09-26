@@ -161,10 +161,12 @@ MEDIA_ROOT = MEDIA_DIR
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'App_Survey.UserProfile'
+
 # LOGIN_URL = '/signin/'
 
-# LOGIN_REDIRECT_URL = 'App_Auth/signin'
-# LOGOUT_REDIRECT_URL = 'App_Auth/signout'
+# LOGIN_REDIRECT_URL = 'App_Survey/admin-login'
+# LOGOUT_REDIRECT_URL = 'App_Survey/signout'
 
 # from datetime import timedelta
 # AUTO_LOGOUT = {

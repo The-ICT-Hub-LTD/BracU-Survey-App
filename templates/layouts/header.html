@@ -5,52 +5,17 @@
     <span class="sr-only">Toggle navigation</span>
   </button>
 
-  <span class="page-title">dashboard</span>
+  <span class="page-title">
+    {% block span_block %} 
+
+    {% endblock span_block %} 
+
+  </span>
 
   <div class="navbar-right">
     <!-- search form -->
-    <div class="search-form">
-      <form action="index.html" method="get">
-        <div
-          class="input-group input-group-sm"
-          id="input-group-search"
-        >
-          <input
-            type="text"
-            autocomplete="off"
-            name="query"
-            id="search-input"
-            class="form-control"
-            placeholder="Search..."
-          />
-          <div class="input-group-append">
-            <button class="btn" type="button">/</button>
-          </div>
-        </div>
-      </form>
-      <ul class="dropdown-menu dropdown-menu-search">
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Morbi leo risus</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.html"
-            >Dapibus ac facilisis in</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.html"
-            >Porta ac consectetur ac</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Vestibulum at eros</a>
-        </li>
-      </ul>
-    </div>
-
     <ul class="nav navbar-nav">
-      <!-- Offcanvas -->
-      <li class="custom-dropdown">
+      <!-- <li class="custom-dropdown">
         <a
           class="offcanvas-toggler active custom-dropdown-toggler"
           data-offcanvas="contact-off"
@@ -58,8 +23,8 @@
         >
           <i class="mdi mdi-contacts icon"></i>
         </a>
-      </li>
-      <li class="custom-dropdown">
+      </li> -->
+      <!-- <li class="custom-dropdown">
         <button class="notify-toggler custom-dropdown-toggler">
           <i class="mdi mdi-bell-outline icon"></i>
           <span class="badge badge-xs rounded-circle">21</span>
@@ -417,7 +382,7 @@
               ></a>
             </div>
           </footer>
-        </div>
+        </div> -->
       </li>
       <!-- User Account -->
       <li class="dropdown user-menu">
@@ -426,11 +391,11 @@
           data-toggle="dropdown"
         >
           <img
-            src="images/user/user-xs-01.jpg"
+            src="{% static 'assets/template1/images/user/user.png' %}"
             class="user-image rounded-circle"
             alt="User Image"
           />
-          <span class="d-none d-lg-inline-block">John Doe</span>
+          <!-- <span class="d-none d-lg-inline-block">John Doe</span> -->
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
           <li>
@@ -439,7 +404,7 @@
               <span class="nav-text">My Profile</span>
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a class="dropdown-link-item" href="email-inbox.html">
               <i class="mdi mdi-email-outline"></i>
               <span class="nav-text">Message</span>
@@ -460,11 +425,12 @@
               <i class="mdi mdi-settings"></i>
               <span class="nav-text">Account Setting</span>
             </a>
-          </li>
+          </li> -->
 
           <li class="dropdown-footer">
-            <a class="dropdown-link-item" href="{% url 'App_Auth:signout' %}">
-              <i class="mdi mdi-logout"></i> Log Out
+            <a class="dropdown-link-item" href="{% url 'App_Survey:signout' %}">
+              <i class="mdi mdi-logout"></i> 
+              <span class="nav-text">Log Out</span>
             </a>
           </li>
         </ul>

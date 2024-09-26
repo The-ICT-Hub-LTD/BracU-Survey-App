@@ -1,0 +1,104 @@
+<!-- Add custom CSS for additional styling -->
+<style>
+    .modal-header {
+        background-color: #f1f1f1;
+        color: white;
+        border-bottom: 1px solid dark;
+    }
+
+    .modal-body {
+        padding: 20px;
+        background-color: #f7f7f7;
+    }
+
+    .form-control {
+        border-radius: 0.25rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .modal-footer {
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-secondary {
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d;
+        border-color: #5a6268;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+    .student-id {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+</style>
+
+<!-- Form inside modal -->
+<div class="student-id">
+    Student ID: {{ complain.student_name }}
+</div>
+<div class="student-id">
+    Student Name: {{ complain.student_id }}
+</div>
+<form method="POST" enctype="multipart/form-data" id="editComplainForm">
+    {% csrf_token %}
+    <div class="modal-body">
+        <div class="form-group">
+            {{ form.as_p }} 
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Updated</button>
+    </div>
+</form>
+
+<script>
+    $('#editComplainForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            url: "{% url 'App_Survey:edit_complain' complain.id %}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    $('#complain-row-' + '{{ complain.id }}').replaceWith(response.updated_row_html);
+
+                    $('#editModal').modal('hide');  
+                    $('body').removeClass('modal-open'); 
+                    $('.modal-backdrop').remove(); 
+
+                    alert('Complain updated successfully!');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Error submitting form:", error);
+            }
+        });
+    });
+</script>
+

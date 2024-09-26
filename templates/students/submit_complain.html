@@ -13,7 +13,7 @@
             </button>
         </div>
         <div class="card-header d-flex align-items-center">
-            <a href="{% url 'home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
+            <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
         </div>
         <div class="card-body">
             <form id="feedbackForm" method="post" enctype="multipart/form-data">
@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group">
                     <label for="student_id">Student ID</label>
-                    <input type="text" class="form-control" id="student_id" name="student_id" required>
+                    <input type="text" class="form-control" id="student_id" name="student_id" pattern="\d{8}" title="Student ID must be 8 digits" maxlength="8" required>
                 </div>
                 <div class="form-group">
                     <label for="problem_details">Feedback Details</label>
@@ -48,7 +48,7 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
     // Simulate an AJAX call here to submit the form
     const formData = new FormData(this);
     
-    fetch("{% url 'submit_complain' %}", {
+    fetch("{% url 'App_Survey:submit_complain' %}", {
         method: "POST",
         body: formData,
         headers: {

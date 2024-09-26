@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center">
-                    <a href="{% url 'home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
+                    <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
                     
                 </div>
                 <div class="card-body">
@@ -63,8 +63,8 @@
                                 {% endif %}
                             </td>
                             <td style="text-align: center;">{{ complaint.feedback_status }}</td>
-                            <td>{{ complaint.solution_details }}</td>
                             <td style="text-align: center;">{{ complaint.submitted_at }}</td>
+                            <td>{{ complaint.solution_details }}</td>
                             <td style="text-align: center;">{{ complaint.resolved_at }}</td>
                             <td style="text-align: center;">
                                 {% if complaint.resolved_image %}
