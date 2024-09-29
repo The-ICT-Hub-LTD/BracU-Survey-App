@@ -1,0 +1,81 @@
+{% extends 'layouts/base.html' %} 
+{% load form_tags %}
+{% block span_block %} 
+Create Profile
+{% endblock span_block %} 
+{% block body_block %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Register User Profile</h2>
+        </div>
+        <div class="card-body"> 
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_email">Email address</label>
+                    {{ user_form.email|add_class:"form-control" }}
+                    <span class="mt-2 d-block">We'll never share your email with anyone else.</span>
+                </div>
+        
+                <!-- <div class="form-group">
+                    <label for="id_password1">Password</label>
+                    {{ user_form.password1|add_class:"form-control" }}
+                </div>
+        
+                <div class="form-group">
+                    <label for="id_password2">Confirm Password</label>
+                    {{ user_form.password2|add_class:"form-control" }}
+                </div> -->
+        
+                <div class="form-group">
+                    <label for="id_name">Name</label>
+                    {{ user_form.name|add_class:"form-control" }}
+                </div>
+        
+                <!-- <div class="form-group">
+                    <label for="id_address1">Address</label>
+                    {{ profile_form.address1|add_class:"form-control" }}
+                </div>
+        
+                <div class="form-group">
+                    <label for="id_city">City</label>
+                    {{ profile_form.city|add_class:"form-control" }}
+                </div> -->
+        
+                <!-- <div class="form-group">
+                    <label for="id_zipcode">Zipcode</label>
+                    {{ profile_form.zipcode|add_class:"form-control" }}
+                </div>
+        
+                <div class="form-group">
+                    <label for="id_country">Country</label>
+                    {{ profile_form.country|add_class:"form-control" }}
+                </div> -->
+        
+                <div class="form-group">
+                    <label for="id_phone">Phone Number</label>
+                    {{ profile_form.phone|add_class:"form-control" }}
+                </div>
+        
+                <!-- <div class="form-group">
+                    <label for="id_joined_date">Joined Date</label>
+                    {{ profile_form.joined_date|add_class:"form-control" }}
+                </div> -->
+        
+                <div class="form-footer mt-6">
+                    <button type="submit" class="btn btn-primary btn-pill">Submit</button>
+                    
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+
+        </div>
+    </div>
+   
+</div>
+
+{% endblock %}

@@ -1,8 +1,9 @@
 from django import forms
-from .models import Complain, Profile
+from .models import Complain, Profile, UserProfile
 from django.core.exceptions import ValidationError
 import re
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 
 class ComplainForm(forms.ModelForm):
     class Meta:
@@ -34,6 +35,26 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ('user',)
+        widgets = {
+            'address1': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'zipcode': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'joined_date': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+
+class UserProfileCreationForm(UserCreationForm):
+    class Meta:
+        model = UserProfile
+        fields = ['email', 'name',  'is_superuser', 'is_staff', 'is_active']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
+        }
+
 
 # class AdminLoginForm(forms.Form):
 #     email = forms.EmailField(label='Email', max_length=255)
@@ -61,3 +82,4 @@ class AdminLoginForm(AuthenticationForm):
 
     class Meta:
         fields = ['username', 'password']
+

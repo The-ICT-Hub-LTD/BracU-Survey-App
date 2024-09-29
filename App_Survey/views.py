@@ -1,19 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
-from .models import Complain, Profile
+from .models import Complain, Profile, UserProfile
 from .forms import ComplainForm, ResolveForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
-from .forms import AdminLoginForm
+from .forms import AdminLoginForm, UserProfileCreationForm, ProfileForm
 from django.urls import reverse 
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+
+
     # user_log = UserLog.objects.filter(user=request.user).order_by('-timestamp')
     # paginator = Paginator(user_log, 10)
 def home(request):
@@ -29,7 +31,7 @@ def submit_complain(request):
             return JsonResponse({'errors': form.errors}, status=400)
     else:
         form = ComplainForm()
-    return render(request, 'students/submit_complain.html', {'form': form})
+    return render(request, 'students/feedback.html', {'form': form})
 
 # For admins to resolve complaints
 @staff_member_required
@@ -88,12 +90,14 @@ def admin_dashboard_view(request):
     total_resolved_complaints = Complain.objects.filter(is_resolved=True).count()
     total_unresolved_complaints = Complain.objects.filter(is_resolved=False).count()
     total_complaints = total_resolved_complaints + total_unresolved_complaints
+    current_user_email = request.user.email
 
     context = {
         'total_active_profiles': total_active_profiles,
         'total_resolved_complaints': total_resolved_complaints,
         'total_unresolved_complaints': total_unresolved_complaints,
         'total_complaints': total_complaints,
+        'current_user_email': current_user_email,  
     }
 
     return render(request, 'App_Survey/dashboard.html', context)
@@ -151,38 +155,76 @@ def complain_details(request, pk):
     }
     return JsonResponse(data)
 
-# View to get complaint details (AJAX call)
-# def get_complain_details(request):
-#     if request.method == "GET" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#         complain_id = request.GET.get('id')
-#         complain = get_object_or_404(Complain, id=complain_id)
-#         response_data = {
-#             'id': complain.id,
-#             'solution_details': complain.solution_details,
-#             'feedback_status': complain.feedback_status,
-#             'resolved_at': complain.resolved_at.isoformat() if complain.resolved_at else '',
-#         }
-#         return JsonResponse(response_data)
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-# @csrf_exempt
-# def update_complain(request):
-#     if request.method == "POST":
-#         complain_id = request.POST.get('complain_id')
-#         complain = get_object_or_404(Complain, id=complain_id)
-#         complain.solution_details = request.POST.get('solution_details')
-#         complain.feedback_status = request.POST.get('feedback_status')
-        
-#         resolved_at = request.POST.get('resolved_at')
-#         if resolved_at:
-#             complain.resolved_at = resolved_at
-        
-#         if 'resolved_image' in request.FILES:
-#             complain.resolved_image = request.FILES['resolved_image']
+# ############## Profile ###################
 
-#         complain.is_resolved = True if complain.feedback_status == 'Solved' else False
-#         complain.save()
+def register_user_profile(request):
+    if request.method == 'POST':
+        user_form = UserProfileCreationForm(request.POST)
+        profile_form = ProfileForm(request.POST)
 
-#         return JsonResponse({'success': True})
-    
-#     return JsonResponse({'success': False}, status=400)
+        if user_form.is_valid() and profile_form.is_valid():
+            # Create and save the UserProfile
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password1'])
+            user.save()
+
+            # Get the automatically created Profile and update it with form data
+            profile = user.profile  # This profile is created by the signal
+            profile_form = ProfileForm(request.POST, instance=profile)
+            
+            if profile_form.is_valid():
+                profile_form.save()
+
+            messages.success(request, "User profile created successfully!")
+            return redirect('App_Survey:view_profile', user_id=user.id)
+
+    else:
+        user_form = UserProfileCreationForm()
+        profile_form = ProfileForm()
+
+    return render(request, 'profile/create_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    })
+
+# View a specific UserProfile and Profile
+@login_required
+def view_profile(request, user_id):
+    user_profile = get_object_or_404(UserProfile, id=user_id)
+    profile = get_object_or_404(Profile, user=user_profile)
+
+    return render(request, 'profile/view_profile.html', {
+        'user_profile': user_profile,
+        'profile': profile
+    })
+
+# Update Profile
+@login_required
+def update_profile(request, user_id):
+    user_profile = get_object_or_404(UserProfile, id=user_id)
+    profile = user_profile.profile
+
+    if request.method == 'POST':
+        user_form = UserProfileCreationForm(request.POST, instance=user_profile)
+        profile_form = ProfileForm(request.POST, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            messages.success(request, "Profile updated successfully!")
+            return redirect('App_Survey:view_profile', user_id=user_profile.id)
+
+    else:
+        user_form = UserProfileCreationForm(instance=user_profile)
+        profile_form = ProfileForm(instance=profile)
+
+    return render(request, 'profile/update_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    })
+
+def user_profile_list(request):
+    user_profiles = UserProfile.objects.all()
+    return render(request, 'profile/profile_list.html', {'user_profiles': user_profiles})

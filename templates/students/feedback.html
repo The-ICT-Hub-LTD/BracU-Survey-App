@@ -19,15 +19,15 @@
             <form id="feedbackForm" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="student_name">Student Name</label>
+                    <label for="student_name">Student Name<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="student_name" name="student_name" required>
                 </div>
                 <div class="form-group">
-                    <label for="student_id">Student ID</label>
+                    <label for="student_id">Student ID<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="student_id" name="student_id" pattern="\d{8}" title="Student ID must be 8 digits" maxlength="8" required>
                 </div>
                 <div class="form-group">
-                    <label for="problem_details">Feedback Details</label>
+                    <label for="problem_details">Feedback Details<span style="color: red;">*</span></label>
                     <textarea class="form-control" id="problem_details" name="problem_details" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
@@ -36,6 +36,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Submit Feedback</button>
             </form>
+        </div>
+        <div class="card-footers">
+            <!-- <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a> -->
         </div>
     </div>
 </div>

@@ -1,0 +1,15 @@
+
+
+{% block content %}
+<h2>{{ user_profile.name }}'s Profile</h2>
+<p>Email: {{ user_profile.email }}</p>
+<p>Username: {{ profile.username }}</p>
+<p>Address: {{ profile.address1 }}</p>
+<p>City: {{ profile.city }}</p>
+<p>Zipcode: {{ profile.zipcode }}</p>
+<p>Country: {{ profile.country }}</p>
+<p>Phone: {{ profile.phone }}</p>
+<p>Joined on: {{ profile.joined_date }}</p>
+
+<a href="{% url 'App_Survey:update_profile' user_profile.id %}">Edit Profile</a>
+{% endblock %}

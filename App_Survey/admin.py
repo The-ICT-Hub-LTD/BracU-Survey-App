@@ -3,9 +3,12 @@ from django.contrib import admin
 from .models import Complain,UserProfile, Profile
 
 
-# class ComplainTables(admin.ModelAdmin):
+class ComplainTables(admin.ModelAdmin):
+    list_display = ['id','student_name','student_id','feedback_status','submitted_at' ]  
+    search_fields = ['student_id']
 
-admin.site.register(Complain)
+
+admin.site.register(Complain,ComplainTables)
 admin.site.register(UserProfile)
 admin.site.register(Profile)
 
