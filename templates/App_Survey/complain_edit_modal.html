@@ -1,80 +1,37 @@
-<!-- Add custom CSS for additional styling -->
-<style>
-    .modal-header {
-        background-color: #f1f1f1;
-        color: white;
-        border-bottom: 1px solid dark;
-    }
-
-    .modal-body {
-        padding: 20px;
-        background-color: #f7f7f7;
-    }
-
-    .form-control {
-        border-radius: 0.25rem;
-    }
-
-    .form-group label {
-        font-weight: bold;
-    }
-
-    .modal-footer {
-        padding: 10px;
-        background-color: #f1f1f1;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #004085;
-    }
-
-    .btn-secondary {
-        transition: all 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-        background-color: #6c757d;
-        border-color: #5a6268;
-    }
-
-    .modal-content {
-        border-radius: 10px;
-    }
-    .student-id {
-        font-weight: bold;
-        font-size: 16px;
-        margin-bottom: 15px;
-    }
-</style>
-
-<!-- Form inside modal -->
-<div class="student-id">
-    Student ID: {{ complain.student_name }}
-</div>
-<div class="student-id">
-    Student Name: {{ complain.student_id }}
-</div>
 <form method="POST" enctype="multipart/form-data" id="editComplainForm">
     {% csrf_token %}
-    <div class="modal-body">
-        <div class="form-group">
-            {{ form.as_p }} 
-        </div>
+    <div class="form-group">
+      <label for="studentName">Student Name</label>
+      <input type="text" class="form-control" id="studentName" value="{{ complain.student_name }}" readonly>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Updated</button>
+    <div class="form-group">
+      <label for="studentID">Student ID</label>
+      <input type="text" class="form-control" id="studentID" value="{{ complain.student_id }}" readonly>
     </div>
-</form>
-
-<script>
+    <div class="form-group">
+      <label for="problemDetails">Problem Details</label>
+      <textarea class="form-control" id="problemDetails" rows="3" readonly>{{ complain.problem_details }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="solutionDetails">Solution Details</label>
+      <textarea class="form-control styled-textarea" id="solutionDetails" name="solution_details">{{ form.solution_details.value }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="feedbackStatus">Feedback Status</label>
+      {{ form.feedback_status }}
+    </div>
+    <div class="form-group">
+      <label for="resolvedImage">Resolved Image</label>
+      {{ form.resolved_image }}
+    </div>
+    <div class="form-group">
+      <label for="resolvedAt">Resolved At</label>
+      {{ form.resolved_at }}
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  
+  <script>
     $('#editComplainForm').on('submit', function(e) {
         e.preventDefault();
         var formData = new FormData(this);
@@ -86,19 +43,41 @@
             contentType: false,
             success: function(response) {
                 if (response.success) {
-                    $('#complain-row-' + '{{ complain.id }}').replaceWith(response.updated_row_html);
-
-                    $('#editModal').modal('hide');  
-                    $('body').removeClass('modal-open'); 
-                    $('.modal-backdrop').remove(); 
-
-                    alert('Complain updated successfully!');
+                    $('#editModal').modal('hide');
+                    location.reload();
+                    // alert('Complain updated successfully!');
                 }
             },
             error: function(xhr, status, error) {
-                console.log("Error submitting form:", error);
+                console.error("Error submitting form:", error);
             }
         });
     });
-</script>
+  </script>
+  <style>
+    .styled-textarea {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
 
+    .custom-select {
+        background-color: #e9ecef;
+        border-radius: 5px;
+        padding: 8px;
+    }
+
+    .form-control-file {
+        padding: 5px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+</style>

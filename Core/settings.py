@@ -151,7 +151,7 @@ STATICFILES_DIRS = [
 ]
 # STATIC_ROOT = ''
 
-# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = MEDIA_DIR

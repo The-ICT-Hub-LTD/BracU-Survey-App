@@ -2,10 +2,10 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
+    <div class="flex justify-content-center">
+        
             <div class="card">
-                <div class="card-header d-flex align-items-center">
+                <div class="card-headers">
                     <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
                     
                 </div>
@@ -28,7 +28,7 @@
                     {% endif %}
                 </div>
             </div>
-        </div> 
+         
     </div>
 </div>
 
@@ -54,7 +54,7 @@
                         {% for complaint in complaints %}
                         <tr style="">
                             <td style="text-align: center;">{{ forloop.counter }}</td>
-                            <td>{{ complaint.problem_details }}</td>
+                            <td>{{ complaint.problem_details | truncatechars:10 }}</td>
                             <td style="text-align: center;">
                                 {% if complaint.complain_image %}
                                     <i class="fas fa-link" style="cursor: pointer;" onclick="viewImage('{{ complaint.complain_image.url }}')"></i>
@@ -64,7 +64,7 @@
                             </td>
                             <td style="text-align: center;">{{ complaint.feedback_status }}</td>
                             <td style="text-align: center;">{{ complaint.submitted_at }}</td>
-                            <td>{{ complaint.solution_details }}</td>
+                            <td>{{ complaint.solution_details | truncatechars:10 }}</td>
                             <td style="text-align: center;">{{ complaint.resolved_at }}</td>
                             <td style="text-align: center;">
                                 {% if complaint.resolved_image %}

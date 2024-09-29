@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
-from .models import Complain
+from .models import Complain, Profile
 from .forms import ComplainForm, ResolveForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
@@ -11,7 +11,11 @@ from .forms import AdminLoginForm
 from django.urls import reverse 
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-
+from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+    # user_log = UserLog.objects.filter(user=request.user).order_by('-timestamp')
+    # paginator = Paginator(user_log, 10)
 def home(request):
     return render(request, 'students/home.html')
 
@@ -40,14 +44,6 @@ def resolve_complain(request, complain_id):
     else:
         form = ResolveForm(instance=complain)
     return render(request, 'students/resolve_complain.html', {'form': form, 'complain': complain})
-
-# For students to search resolved complaints by student ID
-# def search_resolved_complain(request):
-#     if request.method == 'GET' and 'student_id' in request.GET:
-#         student_id = request.GET.get('student_id')
-#         complaints = Complain.objects.filter(student_id=student_id, is_resolved=True)
-#         return render(request, 'students/resolved_complaints.html', {'complaints': complaints})
-#     return render(request, 'students/resolved_complaints.html')
 
 def search_resolved_complain(request):
     student_id = request.GET.get('student_id', '')
@@ -88,7 +84,19 @@ def admin_login_view(request):
 
 @user_passes_test(is_admin) 
 def admin_dashboard_view(request):
-    return render(request, 'App_Survey/dashboard.html')
+    total_active_profiles = Profile.objects.filter(user__is_active=True).count()
+    total_resolved_complaints = Complain.objects.filter(is_resolved=True).count()
+    total_unresolved_complaints = Complain.objects.filter(is_resolved=False).count()
+    total_complaints = total_resolved_complaints + total_unresolved_complaints
+
+    context = {
+        'total_active_profiles': total_active_profiles,
+        'total_resolved_complaints': total_resolved_complaints,
+        'total_unresolved_complaints': total_unresolved_complaints,
+        'total_complaints': total_complaints,
+    }
+
+    return render(request, 'App_Survey/dashboard.html', context)
 
 @login_required
 def signout_user(request):
@@ -99,7 +107,10 @@ def signout_user(request):
 
 @staff_member_required
 def complaint_list(request):
-    complaints = Complain.objects.all()
+    complaint = Complain.objects.all().order_by('-id')
+    paginator = Paginator(complaint, 10) 
+    page_number = request.GET.get('page')
+    complaints = paginator.get_page(page_number)
     return render(request, 'App_Survey/complaint_list.html', {'complaints': complaints})
 
 @staff_member_required
@@ -109,14 +120,69 @@ def edit_complain(request, complain_id):
         form = ResolveForm(request.POST, request.FILES, instance=complain)
         if form.is_valid():
             form.save()
-            # messages.success(request, "Complain updated successfully.")
-            return redirect('App_Survey:complaint_list')
+            return JsonResponse({'success': True})  # Respond with success
     else:
         form = ResolveForm(instance=complain)
 
-    # Updated check for AJAX request
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html = render_to_string('App_Survey/complain_edit_modal.html', {'form': form, 'complain': complain}, request=request)
-        return JsonResponse({'html': html})
+        return JsonResponse({'html': html})  # Return the modal content
 
     return render(request, 'App_Survey/complain_edit.html', {'form': form, 'complain': complain})
+
+@staff_member_required
+def resolved_feedback_list(request):
+    complaint = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
+    paginator = Paginator(complaint, 10) 
+    page_number = request.GET.get('page')
+    complaints = paginator.get_page(page_number)
+    
+    return render(request, 'App_Survey/feedback_solved.html', {'complaints': complaints, })
+
+
+def complain_details(request, pk):
+    complain = get_object_or_404(Complain, pk=pk)
+    data = {
+        'student_name': complain.student_name,
+        'student_id': complain.student_id,
+        'problem_details': complain.problem_details,
+        'complain_image': complain.complain_image.url if complain.complain_image else None,
+        'submitted_at': complain.submitted_at.strftime('%Y-%m-%d %H:%M:%S'),
+    }
+    return JsonResponse(data)
+
+# View to get complaint details (AJAX call)
+# def get_complain_details(request):
+#     if request.method == "GET" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         complain_id = request.GET.get('id')
+#         complain = get_object_or_404(Complain, id=complain_id)
+#         response_data = {
+#             'id': complain.id,
+#             'solution_details': complain.solution_details,
+#             'feedback_status': complain.feedback_status,
+#             'resolved_at': complain.resolved_at.isoformat() if complain.resolved_at else '',
+#         }
+#         return JsonResponse(response_data)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @csrf_exempt
+# def update_complain(request):
+#     if request.method == "POST":
+#         complain_id = request.POST.get('complain_id')
+#         complain = get_object_or_404(Complain, id=complain_id)
+#         complain.solution_details = request.POST.get('solution_details')
+#         complain.feedback_status = request.POST.get('feedback_status')
+        
+#         resolved_at = request.POST.get('resolved_at')
+#         if resolved_at:
+#             complain.resolved_at = resolved_at
+        
+#         if 'resolved_image' in request.FILES:
+#             complain.resolved_image = request.FILES['resolved_image']
+
+#         complain.is_resolved = True if complain.feedback_status == 'Solved' else False
+#         complain.save()
+
+#         return JsonResponse({'success': True})
+    
+#     return JsonResponse({'success': False}, status=400)

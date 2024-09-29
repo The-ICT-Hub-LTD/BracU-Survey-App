@@ -4615,8 +4615,8 @@ input[type=button].btn-block {
 .card-header {
   padding: 0.75rem 1.875rem;
   margin-bottom: 0;
-  background-color: rgba(0, 0, 0, 0.03);
-  border-bottom: 1px solid #e5e9f2;
+  /* background-color: rgba(0, 0, 0, 0.03); */
+  /* border-bottom: 1px solid #e5e9f2; */
 }
 .card-header:first-child {
   border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
@@ -12051,6 +12051,11 @@ button {
   align-items: center;
   padding: 2rem 0rem;
 }
+.app-brand.mb-4.dashbord_image a {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
 @media (min-width: 1200px) {
   .card-profile .card-profile-body {
     flex-direction: row;
@@ -13409,7 +13414,7 @@ label {
   position: relative;
   z-index: 10;
   color: #ffffff;
-  background-color: rgba(158, 109, 224, 0.4);
+  background-color: #007bff;
 }
 .sidebar .sidebar-inner .section-title {
   padding: 1.25rem 1.56rem 1rem;
@@ -13428,7 +13433,7 @@ label {
 .app-brand {
   position: relative;
   display: block;
-  border-bottom: 1px solid rgba(229, 233, 242, 0.25);
+  /* border-bottom: 1px solid rgba(229, 233, 242, 0.25); */
 }
 .app-brand a {
   display: flex;
@@ -13440,20 +13445,26 @@ label {
   transition: width 0.3s ease-in-out;
   padding-left: 1.56rem;
 }
+.app-brand a img{
+  max-width: 40%;
+display: block;
+margin: 0 auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-brand a {
     transition: none;
   }
 }
 @media (min-width: 768px) {
-  .app-brand a {
+  /* .app-brand a {
     overflow: hidden;
-  }
+  } */
 }
-.app-brand a img {
+/* .app-brand a img {
   max-width: 128px;
   vertical-align: middle;
-}
+} */
 .app-brand .brand-name {
   color: #ffffff;
   font-size: 1.25rem;

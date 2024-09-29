@@ -68,22 +68,22 @@ Dashboard
         <!-- User -->
         <div class="card card-default">
           <div class="card-header">
-            <h2>Users</h2>
+            <h2>Total Feedbacks</h2>
           </div>
           <div class="card-body">
             <div
               class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
             >
               <div class="d-flex flex-column">
-                <span class="h3 text-white">325,980</span>
-                <span>vs 275,900 (prev)</span>
+                <span class="h3 text-white">{{ total_complaints }}</span>
+                <!-- <span>vs 275,900 (prev)</span> -->
               </div>
-              <div>
+              <!-- <div>
                 <span>45%</span>
                 <i class="mdi mdi-arrow-up-bold"></i>
-              </div>
+              </div> -->
             </div>
-            <div id="line-chart-1"></div>
+            <!-- <div id="line-chart-1"></div> -->
           </div>
         </div>
       </div>
@@ -91,22 +91,22 @@ Dashboard
         <!-- Session -->
         <div class="card card-default">
           <div class="card-header">
-            <h2>Sessions</h2>
+            <h2>Unresolved Feedbacks</h2>
           </div>
           <div class="card-body">
             <div
               class="bg-success d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
             >
               <div class="d-flex flex-column">
-                <span class="h3 text-white">7,833</span>
-                <span>vs 7,012 (prev)</span>
+                <span class="h3 text-white">{{ total_unresolved_complaints }}</span>
+                <!-- <span>vs 7,012 (prev)</span> -->
               </div>
-              <div>
+              <!-- <div>
                 <span>55%</span>
                 <i class="mdi mdi-arrow-up-bold"></i>
-              </div>
+              </div> -->
             </div>
-            <div id="line-chart-2"></div>
+            <!-- <div id="line-chart-2"></div> -->
           </div>
         </div>
       </div>
@@ -114,25 +114,53 @@ Dashboard
         <!-- Bounce Rate -->
         <div class="card card-default">
           <div class="card-header">
-            <h2>Bounce Rate</h2>
+            <h2>Resolved Feedbacks</h2>
           </div>
           <div class="card-body">
             <div
               class="bg-danger d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
             >
               <div class="d-flex flex-column">
-                <span class="h3 text-white">67.0%</span>
-                <span>vs 65.21% (prev)</span>
+                <span class="h3 text-white">{{ total_resolved_complaints }}</span>
+                <!-- <span>vs 65.21% (prev)</span> -->
               </div>
-              <div>
+              <!-- <div>
                 <span>7%</span>
                 <i class="mdi mdi-arrow-down-bold"></i>
-              </div>
+              </div> -->
             </div>
-            <div id="line-chart-3"></div>
+            <!-- <div id="line-chart-3"></div> -->
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xl-4">
+        <!-- User -->
+        <div class="card card-default">
+          <div class="card-header">
+            <h2>Total Users</h2>
+          </div>
+          <div class="card-body">
+            <div
+              class="bg-dark d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
+            >
+              <div class="d-flex flex-column">
+                <span class="h3 text-white" style="margin: 0 auto;">{{ total_active_profiles }}</span>
+                <!-- <span>vs 275,900 (prev)</span> -->
+              </div>
+              <!-- <div>
+                <span>45%</span>
+                <i class="mdi mdi-arrow-up-bold"></i>
+              </div> -->
+            </div>
+            <!-- <div id="line-chart-1"></div> -->
+          </div>
+        </div>
+      </div>
+      
+      
     </div>
 
     <!-- <div class="row">

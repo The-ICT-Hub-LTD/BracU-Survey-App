@@ -1,7 +1,7 @@
 {% load static %}
   <div id="sidebar" class="sidebar sidebar-with-footer">
     <!-- Aplication Brand -->
-    <div class="app-brand mb-4 p-5">
+    <div class="app-brand mb-4 dashbord_image">
       <a href="#">
         <img src="{% static 'assets/template1/images/KDC-Logo.webp' %}" alt="KDC" />
         <!-- <span class="brand-name">DYNAMIX</span> -->
@@ -28,7 +28,7 @@
         </li>
 
         <li>
-          <a class="sidenav-item-link" href="contacts.html">
+          <a class="sidenav-item-link" href="{% url 'App_Survey:resolved' %}">
             <i class="mdi mdi-calendar-check"></i>
             <span class="nav-text">All Resolved</span>
           </a>

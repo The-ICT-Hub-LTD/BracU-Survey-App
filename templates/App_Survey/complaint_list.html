@@ -21,14 +21,14 @@ All Feedbacks
           <thead>
             <tr>
                 <th>SL</th>
-                <th>Student Name</th>
-                <th>Student ID</th>
-                <th>Feedback Details</th>
+                <th>Name</th>
+                <th>UID</th>
+                <th>Feedback</th>
                 <th>Images</th>
                 <th>Status</th>
                 <th>Issued</th>
-                <th>Update</th>
                 <th>View</th>
+                <th>Action</th>
               <th></th>
             </tr>
           </thead>
@@ -38,7 +38,7 @@ All Feedbacks
                 <td>{{ forloop.counter }}</td>
                 <td>{{ complain.student_name }}</td>
                 <td>{{ complain.student_id }}</td>
-                <td  style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ complain.problem_details | truncatechars:20  }}</td>
+                <td  style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ complain.problem_details | truncatechars:10  }}</td>
                 <td style="text-align: center;">
                     {% if complain.complain_image %}
                         <span class="mdi mdi-image-multiple large" style="cursor: pointer;" onclick="viewImage('{{ complain.complain_image.url }}')" ></span>
@@ -49,20 +49,96 @@ All Feedbacks
                 <td>{{ complain.feedback_status }}</td>
                 <td>{{ complain.submitted_at }}</td>
                 <td>
-                    <a href="{% url 'App_Survey:edit_complain' complain.id %}" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#editModal" onclick="openEditModal({{ complain.id }})">Edit</a>
+                  <button
+                    type="button"
+                    class="btn btn-info btn-pill btn-sm"
+                    data-toggle="modal"
+                    data-target="#exampleModalForm"
+                    onclick="viewComplainDetails(
+                        '{{ complain.student_name }}', 
+                        '{{ complain.student_id }}', 
+                        '{{ complain.problem_details }}', 
+                        {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
+                        '{{ complain.submitted_at }}', 
+                        '{{ complain.feedback_status }}')">
+                    View
+                  </button>
                 </td>
                 <td>
-                    <a href="{% url 'App_Survey:resolve_complain' complain.id %}" class="btn btn-info btn-sm">View</a>
+                  <a href="#" class="btn btn-primary btn-sm btn-pill" data-toggle="modal" data-target="#editModal"
+                     onclick="openEditModal({{ complain.id }})">Solve</a>
                 </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      
+      <!-- ================= Pagination ================ -->
+      <div class="card card-default align-items-end">
+        <div class="card-body">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                {% if complaints.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ complaints.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true" class="mdi mdi-chevron-left"></span>
+                    <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for i in complaints.paginator.page_range %}
+                    {% if complaints.number == i %}
+                        <li class="page-item active"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if complaints.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ complaints.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true" class="mdi mdi-chevron-right"></span>
+                    <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {% endif %}
+                </ul>
+            </nav>
+        </div>
     </div>
+  </div>
 
+<!--============== View Modal ==============-->
+<div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalFormTitle">Complaint Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
+        <p><strong>Student ID:</strong> <span id="modalStudentID"></span></p>
+        <p><strong>Problem Details:</strong> <span id="modalProblemDetails"></span></p>
+        <p><strong>Complaint Image:</strong> 
+          <img id="modalComplainImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
+          <span id="modalComplainImagePlaceholder"></span>
+        </p>
+        <p><strong>Submitted At:</strong> <span id="modalSubmittedAt"></span></p>
+        <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-pill" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-
+<!--=================== Image Open =============================-->
 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -79,22 +155,20 @@ All Feedbacks
     </div>
 </div>
 
-<!-- Modal for Editing Complaint -->
+<!-- ========= Edit Modal =========== -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel">Update Feedbacks</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <div id="modalEditForm">
-                  
-              </div>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Complain</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body" id="modalEditForm">
+        <!-- The form content will be loaded here via AJAX -->
+      </div>
+    </div>
   </div>
 </div>
 
@@ -103,20 +177,40 @@ All Feedbacks
         document.getElementById('modalImage').src = imageUrl;
         $('#imageModal').modal('show');
     }
-
     function openEditModal(complainId) {
-        $.ajax({
-            url: "{% url 'App_Survey:edit_complain' 0 %}".replace(0, complainId),
-            type: "GET",
-            success: function(response) {
-                $('#modalEditForm').html(response.html);
-                $('#editModal').modal('hide');
-            },
-            error: function(xhr, status, error) {
-                console.log("Error loading modal:", error);
-            }
-        });
+      $.ajax({
+          url: "{% url 'App_Survey:edit_complain' 0 %}".replace(0, complainId),
+          type: "GET",
+          success: function(response) {
+              $('#modalEditForm').html(response.html);  // Load form content into modal body
+              $('#editModal').modal('show');  // Display the modal
+          },
+          error: function(xhr, status, error) {
+              console.log("Error loading modal:", error);
+          }
+      });
+  }
+
+    // View Modal
+    function viewComplainDetails(student_name, student_id, problem_details, complain_image_url, submitted_at,   feedback_status) {
+    document.getElementById('modalStudentName').textContent = student_name;
+    document.getElementById('modalStudentID').textContent = student_id;
+    document.getElementById('modalProblemDetails').textContent = problem_details;
+    
+    const modalComplainImage = document.getElementById('modalComplainImage');
+    if (complain_image_url && complain_image_url !== "None") {
+      modalComplainImage.src = complain_image_url;
+      modalComplainImage.style.display = "block"; 
+    } else {
+      modalComplainImage.style.display = "none"; 
+      document.getElementById('modalComplainImagePlaceholder').textContent = "No Image Available";
     }
+
+    document.getElementById('modalSubmittedAt').textContent = submitted_at;
+    document.getElementById('modalFeedbackStatus').textContent = feedback_status;
+  }
+
+
 </script>
 
 {% endblock %} 

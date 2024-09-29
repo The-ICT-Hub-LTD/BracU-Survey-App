@@ -12,7 +12,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="card-header d-flex align-items-center">
+        <div class="card-headers">
             <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
         </div>
         <div class="card-body">
@@ -59,7 +59,7 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
         if (response.ok) {
             // Show the success alert
             const alertBox = document.getElementById('successAlert');
-            alertBox.style.display = 'block';
+            alertBox.style.display = 'inline';
             alertBox.classList.add('show');
             
             // Reset the form after submission

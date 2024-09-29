@@ -20,7 +20,15 @@ class ComplainForm(forms.ModelForm):
 class ResolveForm(forms.ModelForm):
     class Meta:
         model = Complain
-        fields = ['solution_details', 'feedback_status', 'resolved_image']
+        fields = ['solution_details', 'feedback_status', 'resolved_image', 'resolved_at']
+        widgets = {
+            'solution_details': forms.Textarea(attrs={'class': 'form-control styled-textarea'}),
+            'feedback_status': forms.Select(attrs={'class': 'form-control custom-select'}),
+            'resolved_image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'resolved_at': forms.DateInput(
+                attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'form-control'}
+            )
+        }
 
 class ProfileForm(forms.ModelForm):
     class Meta:
