@@ -10,6 +10,29 @@ All Feedbacks
         <h2>Students Feedback Table</h2>
       </div>
       <div class="card-body">
+        <form method="GET" id="filter-form" action="{% url 'App_Survey:complaint_list' %}">
+          <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="student-id">Student ID:</label>
+              <input type="text" class="form-control" id="student-id" name="student_id" placeholder="Search by Student ID" value="{{ request.GET.student_id }}">
+              </div>
+              <div class="col-md-2">
+                  <label for="start-date">Start Date:</label>
+                  <input type="date" class="form-control" id="start-date" name="start_date" value="{{ request.GET.start_date }}">
+              </div>
+              <div class="col-md-2">
+                  <label for="end-date">End Date:</label>
+                  <input type="date" class="form-control" id="end-date" name="end_date" value="{{ request.GET.end_date }}">
+              </div>
+              <div class="col-md-2">
+                <h3 style="color: white">.</h3>
+                <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                <a href="{% url 'App_Survey:complaint_list' %}" class="btn btn-secondary btn-sm">X</a>
+                <span class="mdi-lock-reset"></span>
+              </div>
+          </div>
+      </form>
+      
         <div class="collapse" id="collapse-data-tables">
           <pre class="language-html mb-4"></pre>
         </div>

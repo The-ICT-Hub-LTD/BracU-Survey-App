@@ -33,35 +33,36 @@
 </div>
 
 {% if complaints %}
-<div class="container mt-5 mb-5">
-    <div class="row">
+<div class="container mt-5 ">
+    <div class="card">
         <div class="table-responsive">
             <div style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
                 <table class="table table-bordered table-striped table-hover">
                     <thead>     
                         <tr>
                             <th style="text-align: center; ">SL</th>
-                            <th style="text-align: center;">Feedback</th>
-                            <th style="text-align: center;">Image</th>
+                            <!-- <th style="text-align: center;">Feedback</th>
+                            <th style="text-align: center;">Image</th> -->
                             <th style="text-align: center;">Status</th>
                             <th style="text-align: center;">Issued</th>
                             <th style="text-align: center;">Solution</th>
                             <th style="text-align: center;">Solved At</th>
                             <th style="text-align: center;">Attachemnt</th>
+                            <!-- <th style="text-align: center;">Action</th> -->
                         </tr>
                     </thead>
                     <tbody>
                         {% for complaint in complaints %}
                         <tr style="">
                             <td style="text-align: center;">{{ forloop.counter }}</td>
-                            <td>{{ complaint.problem_details | truncatechars:10 }}</td>
+                            <!-- <td>{{ complaint.problem_details | truncatechars:10 }}</td>
                             <td style="text-align: center;">
                                 {% if complaint.complain_image %}
                                     <i class="fas fa-link" style="cursor: pointer;" onclick="viewImage('{{ complaint.complain_image.url }}')"></i>
                                 {% else %}
                                     No image
                                 {% endif %}
-                            </td>
+                            </td> -->
                             <td style="text-align: center;">{{ complaint.feedback_status }}</td>
                             <td style="text-align: center;">{{ complaint.submitted_at }}</td>
                             <td>{{ complaint.solution_details | truncatechars:10 }}</td>
@@ -70,9 +71,10 @@
                                 {% if complaint.resolved_image %}
                                     <i class="fas fa-link" style="cursor: pointer;" onclick="viewImage('{{ complaint.resolved_image.url }}')"></i>
                                 {% else %}
-                                    No image
+                                    No Files
                                 {% endif %}
                             </td>
+                            <!-- <td style="text-align: center;"><button class="btn btn-primary">View</button></td> -->
 
                         </tr>
                         {% endfor %}

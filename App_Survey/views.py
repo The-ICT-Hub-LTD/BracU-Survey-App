@@ -14,7 +14,8 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-
+from django.db.models import Q
+from datetime import datetime
 
 def home(request):
     return render(request, 'students/home.html')
@@ -50,6 +51,7 @@ def search_resolved_complain(request):
     student_id = request.GET.get('student_id', '')
     complaints = Complain.objects.filter(student_id=student_id) if student_id else []
     return render(request, 'students/resolved_complaints.html', {'complaints': complaints, 'student_id': student_id})
+
 
 def submission_complete(request):
     return render(request, 'students/submission_complete.html')
@@ -110,8 +112,28 @@ def signout_user(request):
 
 @staff_member_required
 def complaint_list(request):
-    complaint = Complain.objects.all().order_by('-id')
-    paginator = Paginator(complaint, 10) 
+    complaints = Complain.objects.all().order_by('-id')
+
+    # Get filter inputs
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    student_id = request.GET.get('student_id')
+
+    # Filter by date range
+    if start_date and end_date:
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            complaints = complaints.filter(submitted_at__date__range=[start_date, end_date])
+        except ValueError:
+            pass 
+
+    # Filter by student_id
+    if student_id:
+        complaints = complaints.filter(student_id__icontains=student_id)
+
+    # Pagination
+    paginator = Paginator(complaints, 10) 
     page_number = request.GET.get('page')
     complaints = paginator.get_page(page_number)
     return render(request, 'App_Survey/complaint_list.html', {'complaints': complaints})
