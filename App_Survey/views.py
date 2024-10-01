@@ -16,6 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from datetime import datetime
+from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
     return render(request, 'students/home.html')
@@ -24,13 +26,33 @@ def submit_complain(request):
     if request.method == 'POST':
         form = ComplainForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            # return JsonResponse({'success': True}, status=200)
+            # Save the form
+            complain = form.save()
+
+            # Email details
+            subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
+            message = f"Student Name: {complain.student_name}\n" \
+                      f"Student ID: {complain.student_id}\n" \
+                      f"Feedback Details: {complain.problem_details}\n" 
+                                
+            recipients = ['shovonmufrid98@gmail.com', 'm3shovon.dev@gmail.com', 'mia.md.mufrid@gmail.com']
+            
+            # Send email
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                recipients,
+                fail_silently=False
+            )
+
+            # Redirect after successful form submission
             return redirect('App_Survey:submission_complete')
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     else:
         form = ComplainForm()
+
     return render(request, 'students/feedback.html', {'form': form})
 
 # For admins to resolve complaints

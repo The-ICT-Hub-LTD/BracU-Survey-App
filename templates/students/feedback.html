@@ -21,7 +21,7 @@
                     <input type="text" class="form-control" id="student_name" name="student_name" required>
                 </div>
                 <div class="form-group">
-                    <label for="student_id">Student ID<span style="color: red;">*</span></label>
+                    <label for="student_id">Student UID<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="student_id" name="student_id" pattern="\d{8}" title="Student ID must be 8 digits" maxlength="8" required>
                 </div>
                 <div class="form-group">
@@ -32,7 +32,10 @@
                     <label for="complain_image">Upload Image (Optional)</label>
                     <input type="file" class="form-control-file" id="complain_image" name="complain_image">
                 </div>
-                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                <button type="submit" id="submitBtn" class="btn btn-primary">
+                    <span id="submitText">Submit Feedback</span>
+                    <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </button>
             </form>
         </div>
         <div class="card-footers">
@@ -43,7 +46,15 @@
 <script>
 // JavaScript to show alert and handle redirection
 document.getElementById('feedbackForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Prevent the form from submitting via HTTP
+    event.preventDefault();
+
+    // Show spinner and disable submit button
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const spinner = document.getElementById('spinner');
+    submitBtn.disabled = true;
+    submitText.style.display = 'none';
+    spinner.style.display = 'inline-block';
     
     // Simulate an AJAX call here to submit the form
     const formData = new FormData(this);
@@ -62,9 +73,17 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
         } else {
             // Handle error response if necessary
             console.error('Error submitting feedback');
+            submitBtn.disabled = false;
+            submitText.style.display = 'inline';
+            spinner.style.display = 'none';
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        submitBtn.disabled = false;
+        submitText.style.display = 'inline';
+        spinner.style.display = 'none';
+    });
 });
 </script>
 

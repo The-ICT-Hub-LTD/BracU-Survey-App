@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -65,13 +66,16 @@
                 </div>
               </div>
               <div class="card-body">
-                <h4 class="text-primary mb-6 text-center mt-5"><b>Admin Login</b></h4>
+                <h4 class="text-primary mb-6 text-center mt-5"><b><i><u>Admin Login</u></i></b></h4>
 
                 {% if messages %}
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {% for message in messages %}
                         {{ message }}
                     {% endfor %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <a href="{% url 'App_Survey:admin_login' %}"><span aria-hidden="true">×</span></a>
+                    </button>
                 </div>
                 {% endif %}
 
@@ -112,12 +116,10 @@
                       >
                         Sign In
                       </button>
-                      <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="btn btn-danger btn-pill mb-4">
-                        <i class="fab fa-google"></i> Sign In with Google
-                      </a>
-                      <!-- <p>Don't have an account yet ?
-                            <a class="text-blue" href="sign-up.html">Sign Up</a>
-                          </p> -->
+                      <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+                        Login with Google
+                    </a>
+                                         
                     </div>
                   </div>
                 </form>

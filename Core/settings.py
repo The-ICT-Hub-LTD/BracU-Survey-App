@@ -18,8 +18,6 @@ SECRET_KEY = 'django-insecure-gz#7qi643+%c8=v+id*t$2$_ou&*aakos+gmyc%laxn(93-9$(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
 # SECRET_KEY = config('THE_SECRET_KEY')
 # DEBUG = config('WEB_DEBUG', cast = bool)
 
@@ -39,43 +37,75 @@ INSTALLED_APPS = [
     'social_django',
     'App_Survey',
 
+    'django.contrib.sites',  
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', 
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# Google SSO
+### Google SSO
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2', 
+    # 'social_core.backends.google.GoogleOAuth2', 
     'django.contrib.auth.backends.ModelBackend',  
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-GOOGLE_SSO_PROJECT_ID = "khabardabar"
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
-SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
-GOOGLE_SSO_ALLOWABLE_DOMAINS = ["gmail.com"]
-
-
-LOGIN_URL = 'App_Survey:admin_login'  
-LOGOUT_URL = 'App_Survey:signout'
-LOGIN_REDIRECT_URL = 'App_Survey:admin_dashboard'
 
 SITE_ID = 1
 
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'App_Survey.pipeline.require_staff',        
-    'App_Survey.pipeline.create_user_profile',  
-    'App_Survey.pipeline.verify_email', 
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE' : [
+            'profile',
+            'email'
+        ],
+        'APP': {
+            'client_id': '262139276381-bcoqo1v8eolsh2ma8cvnvhbb6th4q24s.apps.googleusercontent.com',
+            'secret': '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',
+            'key': '',
+        },
+        'AUTH_PARAMS': {
+            'access_type':'online',
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = 'App_Survey:admin_dashboard' 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'  
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+GOOGLE_SSO_PROJECT_ID = config('GOOGLE_SSO_PROJECT_ID')
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
+# SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+# GOOGLE_SSO_ALLOWABLE_DOMAINS = ["gmail.com"]
+
+
+# LOGIN_URL = 'App_Survey:admin_login'  
+# LOGOUT_URL = 'App_Survey:signout'
+# LOGIN_REDIRECT_URL = 'App_Survey:admin_dashboard'
+
+
+# SOCIAL_AUTH_PIPELINE = (
+#     'social_core.pipeline.social_auth.social_details',
+#     'social_core.pipeline.social_auth.social_uid',
+#     'social_core.pipeline.social_auth.auth_allowed',
+#     'social_core.pipeline.social_auth.social_user',
+#     'social_core.pipeline.user.get_username',
+#     'App_Survey.pipeline.require_staff',        
+#     'App_Survey.pipeline.create_user_profile',  
+#     'App_Survey.pipeline.verify_email', 
+#     'social_core.pipeline.social_auth.associate_user',
+#     'social_core.pipeline.social_auth.load_extra_data',
+#     'social_core.pipeline.user.user_details',
+# )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,6 +116,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -217,13 +248,14 @@ AUTH_USER_MODEL = 'App_Survey.UserProfile'
 
 
 # # Send Mail 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'shovonmufrid98@gmail.com'
-# EMAIL_HOST_PASSWORD = 'dgsxxwcpogfrolvr'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'khabardabarcateringbd@gmail.com'
+EMAIL_HOST_PASSWORD = 'icpmukqvkqogytdu'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ### Lockdown Password
 # LOCKDOWN_PASSWORDS = ('letmein', 'beta')

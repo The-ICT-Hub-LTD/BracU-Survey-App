@@ -11,39 +11,40 @@
     <div class="sidebar-left" data-simplebar style="height: 100%">
       <!-- sidebar menu -->
       <ul class="nav sidebar-inner" id="sidebar-menu">
-        <li class="active">
-          <a class="sidenav-item-link" href="{% url 'App_Survey:admin_dashboard' %}">
-            <i class="mdi mdi-briefcase-account-outline"></i>
-            <span class="nav-text">Dashboard</span>
-          </a>
-        </li>
-        
-        <li class="section-title">Users</li>
-
-        <li>
-          <a class="sidenav-item-link" href="{% url 'App_Survey:user_profile_list' %}">
-            <i class="mdi mdi-account-group"></i>
-            <span class="nav-text">All Profiles</span>
-          </a>
-        </li>
-        <li class="section-title">Apps</li>
-
-        <li>
-          <a class="sidenav-item-link" href="{% url 'App_Survey:complaint_list' %}">
-            <i class="mdi mdi-folder-outline"></i>
-            <span class="nav-text">All Feedback</span>
-          </a>
-        </li>
-
-        <li>
-          <a class="sidenav-item-link" href="{% url 'App_Survey:resolved' %}">
-            <i class="mdi mdi-calendar-check"></i>
-            <span class="nav-text">All Resolved</span>
-          </a>
-        </li>
-
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+              <a class="sidenav-item-link" href="{% url 'App_Survey:admin_dashboard' %}">
+                  <i class="mdi mdi-briefcase-account-outline"></i>
+                  <span class="nav-text">Dashboard</span>
+              </a>
+          </li>
+  
+          <li class="section-title">Users</li>
+  
+          <li class="{% if request.resolver_match.url_name == 'user_profile_list' %}active{% endif %}">
+              <a class="sidenav-item-link" href="{% url 'App_Survey:user_profile_list' %}">
+                  <i class="mdi mdi-account-group"></i>
+                  <span class="nav-text">All Profiles</span>
+              </a>
+          </li>
+  
+          <li class="section-title">Apps</li>
+  
+          <li class="{% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+              <a class="sidenav-item-link" href="{% url 'App_Survey:complaint_list' %}">
+                  <i class="mdi mdi-folder-outline"></i>
+                  <span class="nav-text">All Feedback</span>
+              </a>
+          </li>
+  
+          <li class="{% if request.resolver_match.url_name == 'resolved' %}active{% endif %}">
+              <a class="sidenav-item-link" href="{% url 'App_Survey:resolved' %}">
+                  <i class="mdi mdi-calendar-check"></i>
+                  <span class="nav-text">All Resolved</span>
+              </a>
+          </li>
+  
       </ul>
-    </div>
+  </div>
 
     <!-- <div class="sidebar-footer">
       <div class="sidebar-footer-content">
@@ -65,3 +66,4 @@
       </div>
     </div> -->
   </div>
+

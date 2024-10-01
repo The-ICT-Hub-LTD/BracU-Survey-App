@@ -55,19 +55,6 @@ class UserProfileCreationForm(UserCreationForm):
             'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
         }
 
-
-# class AdminLoginForm(forms.Form):
-#     email = forms.EmailField(label='Email', max_length=255)
-#     password = forms.CharField(widget=forms.PasswordInput, label='Password')
-
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         email = cleaned_data.get('email')
-#         password = cleaned_data.get('password')
-#         return cleaned_data
-
-
-
 class AdminLoginForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.EmailInput(attrs={
         'class': 'form-control',

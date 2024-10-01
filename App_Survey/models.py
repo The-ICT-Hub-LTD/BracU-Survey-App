@@ -38,18 +38,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # Define the related_name for is_staff field
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='app_auth_users_is_staff'
-    )
-
-    # Define the related_name for is_active field
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='app_auth_users_is_active'
-    )
-
     objects = UserProfileManager()
 
     USERNAME_FIELD = "email"
@@ -91,15 +79,18 @@ class Profile(models.Model):
         return True
 
 # Signal to create or update profile when user is created
+# @receiver(post_save, sender=UserProfile)
+# def create_or_update_user_profile(sender, instance, created, **kwargs):
+#     print(instance)
+#     if created:
+#         Profile.objects.create(user=instance)     
+#     else:
+#         instance.profile.save()
+
 @receiver(post_save, sender=UserProfile)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    print(instance)
-    if created:
-        Profile.objects.create(user=instance)
-        
-    else:
-        instance.profile.save()
-    
+    Profile.objects.get_or_create(user=instance)  
+      
 
 # Custom validator for student ID
 def validate_student_id(value):

@@ -82,4 +82,5 @@ django-filter
 
 # Google SSO
 social-auth-app-django
+django-allauth
 
