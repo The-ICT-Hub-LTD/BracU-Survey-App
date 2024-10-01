@@ -8,7 +8,7 @@ urlpatterns = [
     path('submit-feedbacks/', views.submit_complain, name='submit_complain'),
     path('resolve-complain/<int:complain_id>/', views.resolve_complain, name='resolve_complain'),
     path('search-resolved/', views.search_resolved_complain, name='search_resolved_complain'),
-    path('complain-success/', views.complain_success, name='complain_success'),
+    path('submission-complete/', views.submission_complete, name='submission_complete'),
     # path('survey/admin/', views.signin_user, name='signin'),
     path('admin-login/', views.admin_login_view, name='admin_login'),  # Admin login URL
     path('dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
@@ -22,5 +22,6 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.view_profile, name='view_profile'),
     path('profile/update/<int:user_id>/', views.update_profile, name='update_profile'),
     path('userprofiles/', views.user_profile_list, name='user_profile_list'),
+
     
 ]

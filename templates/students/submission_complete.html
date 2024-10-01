@@ -1,0 +1,62 @@
+{% extends 'students/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Complete</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 100px;
+            text-align: center;
+        }
+        .success-message {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .back-home-btn {
+            margin-top: 20px;
+        }
+        .spinner-border {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card p-4 shadow">
+            <div class="card-headers">
+                <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
+            </div>
+            <h2 class="success-message">Your complaint has been successfully submitted!</h2>
+            <p>We will get back to you shortly.</p>
+            <button id="backHome" class="btn btn-primary back-home-btn">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Back to Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("backHome").addEventListener("click", function() {
+            var button = this;
+            var spinner = button.querySelector(".spinner-border");
+            spinner.style.display = "inline-block";  // Show the spinner
+            button.disabled = true;  // Disable the button
+
+            setTimeout(function() {
+                window.location.href = "/";  // Redirect to the home page
+            }, 2000);  // Simulate a short delay
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

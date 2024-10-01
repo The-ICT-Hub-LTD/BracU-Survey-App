@@ -16,8 +16,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 
-    # user_log = UserLog.objects.filter(user=request.user).order_by('-timestamp')
-    # paginator = Paginator(user_log, 10)
 def home(request):
     return render(request, 'students/home.html')
 
@@ -26,7 +24,8 @@ def submit_complain(request):
         form = ComplainForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return JsonResponse({'success': True}, status=200)
+            # return JsonResponse({'success': True}, status=200)
+            return redirect('App_Survey:submission_complete')
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     else:
@@ -52,8 +51,8 @@ def search_resolved_complain(request):
     complaints = Complain.objects.filter(student_id=student_id) if student_id else []
     return render(request, 'students/resolved_complaints.html', {'complaints': complaints, 'student_id': student_id})
 
-def complain_success(request):
-    return render(request, 'students/complain_success.html')
+def submission_complete(request):
+    return render(request, 'students/submission_complete.html')
 
 
 

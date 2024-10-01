@@ -34,11 +34,47 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'App_Survey',
 
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Google SSO
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',  # Google OAuth2
+    'django.contrib.auth.backends.ModelBackend',  # Default Django auth
+)
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '262139276381-nic60a4bck1gqa0pgsqd5sepqnb1hv4q.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+GOOGLE_SSO_PROJECT_ID = "khabardabar"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+GOOGLE_SSO_ALLOWABLE_DOMAINS = ["gmail.com"]
+
+
+LOGIN_URL = 'App_Survey:admin_login'  
+LOGOUT_URL = 'App_Survey:signout'
+LOGIN_REDIRECT_URL = 'App_Survey:admin_dashboard'
+
+SITE_ID = 1
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'App_Survey.pipeline.require_staff',        # Custom step to ensure user is staff
+    'App_Survey.pipeline.create_user_profile',   # Custom user creation
+    'App_Survey.pipeline.verify_email', 
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -78,6 +115,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

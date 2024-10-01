@@ -2,8 +2,6 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-
-
     <div class="card">
         <!-- Success Alert -->
         <div id="successAlert" class="alert alert-success alert-dismissible fade" role="alert" style="display: none;">
@@ -38,13 +36,12 @@
             </form>
         </div>
         <div class="card-footers">
-            <!-- <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a> -->
         </div>
     </div>
 </div>
 
 <script>
-// JavaScript to show alert and reset form
+// JavaScript to show alert and handle redirection
 document.getElementById('feedbackForm').addEventListener('submit', function(event) {
     event.preventDefault();  // Prevent the form from submitting via HTTP
     
@@ -60,13 +57,8 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
     })
     .then(response => {
         if (response.ok) {
-            // Show the success alert
-            const alertBox = document.getElementById('successAlert');
-            alertBox.style.display = 'inline';
-            alertBox.classList.add('show');
-            
-            // Reset the form after submission
-            document.getElementById('feedbackForm').reset();
+            // Redirect to the submission_complete page after successful submission
+            window.location.href = "{% url 'App_Survey:submission_complete' %}";
         } else {
             // Handle error response if necessary
             console.error('Error submitting feedback');

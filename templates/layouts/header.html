@@ -4,17 +4,17 @@
   <button id="sidebar-toggler" class="sidebar-toggle">
     <span class="sr-only">Toggle navigation</span>
   </button>
+  <li class="d-none d-lg-inline-block">Total Active Users: {{ total_active_profiles }}</li>
 
-  <span class="page-title">
     {% block span_block %} 
-
+    
     {% endblock span_block %} 
 
-  </span>
 
   <div class="navbar-right">
     <!-- search form -->
     <ul class="nav navbar-nav">
+      
       <!-- <li class="custom-dropdown">
         <a
           class="offcanvas-toggler active custom-dropdown-toggler"
@@ -383,9 +383,12 @@
             </div>
           </footer>
         </div> -->
-      </li>
+      <!-- </li> -->
       <!-- User Account -->
+    
+      <li><span class="d-none d-lg-inline-block"> {{ current_user_email }} </span></li>
       <li class="dropdown user-menu">
+        
         <button
           class="dropdown-toggle nav-link"
           data-toggle="dropdown"
@@ -398,12 +401,13 @@
           <!-- <span class="d-none d-lg-inline-block">John Doe</span> -->
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-          <li>
+          <!-- <li>
             <a class="dropdown-link-item" href="user-profile.html">
               <i class="mdi mdi-account-outline"></i>
               <span class="nav-text">My Profile</span>
             </a>
-          </li>
+          </li> -->
+
           <!-- <li>
             <a class="dropdown-link-item" href="email-inbox.html">
               <i class="mdi mdi-email-outline"></i>

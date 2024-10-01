@@ -112,6 +112,9 @@
                       >
                         Sign In
                       </button>
+                      <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="btn btn-danger btn-pill mb-4">
+                        <i class="fab fa-google"></i> Sign In with Google
+                      </a>
                       <!-- <p>Don't have an account yet ?
                             <a class="text-blue" href="sign-up.html">Sign Up</a>
                           </p> -->

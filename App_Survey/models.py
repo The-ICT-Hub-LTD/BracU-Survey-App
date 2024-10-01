@@ -93,10 +93,13 @@ class Profile(models.Model):
 # Signal to create or update profile when user is created
 @receiver(post_save, sender=UserProfile)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
+    print(instance)
     if created:
         Profile.objects.create(user=instance)
+        
     else:
         instance.profile.save()
+    
 
 # Custom validator for student ID
 def validate_student_id(value):
