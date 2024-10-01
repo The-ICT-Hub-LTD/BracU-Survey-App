@@ -18,6 +18,8 @@ SECRET_KEY = 'django-insecure-gz#7qi643+%c8=v+id*t$2$_ou&*aakos+gmyc%laxn(93-9$(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+
 # SECRET_KEY = config('THE_SECRET_KEY')
 # DEBUG = config('WEB_DEBUG', cast = bool)
 
@@ -47,9 +49,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Default Django auth
 )
 
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '262139276381-nic60a4bck1gqa0pgsqd5sepqnb1hv4q.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 GOOGLE_SSO_PROJECT_ID = "khabardabar"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
@@ -68,8 +69,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
-    'App_Survey.pipeline.require_staff',        # Custom step to ensure user is staff
-    'App_Survey.pipeline.create_user_profile',   # Custom user creation
+    'App_Survey.pipeline.require_staff',        
+    'App_Survey.pipeline.create_user_profile',  
     'App_Survey.pipeline.verify_email', 
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
