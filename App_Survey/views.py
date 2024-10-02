@@ -29,12 +29,10 @@ def submit_complain(request):
             # Save the form
             complain = form.save()
 
-            # Email details
             subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
             message = f"Student Name: {complain.student_name}\n" \
                       f"Student ID: {complain.student_id}\n" \
-                      f"Feedback Details: {complain.problem_details}\n" 
-                                
+                      f"Feedback Details: {complain.problem_details}\n"                              
             recipients = ['shovonmufrid98@gmail.com', 'm3shovon.dev@gmail.com', 'mia.md.mufrid@gmail.com']
             
             # Send email
@@ -46,13 +44,11 @@ def submit_complain(request):
                 fail_silently=False
             )
 
-            # Redirect after successful form submission
-            return redirect('App_Survey:submission_complete')
+            return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
         else:
             return JsonResponse({'errors': form.errors}, status=400)
-    else:
-        form = ComplainForm()
-
+    
+    form = ComplainForm()
     return render(request, 'students/feedback.html', {'form': form})
 
 # For admins to resolve complaints
@@ -220,7 +216,8 @@ def register_user_profile(request):
                 profile_form.save()
 
             messages.success(request, "User profile created successfully!")
-            return redirect('App_Survey:view_profile', user_id=user.id)
+            # return redirect('App_Survey:view_profile', user_id=user.id)
+            return redirect('App_Survey:user_profile_list')
 
     else:
         user_form = UserProfileCreationForm()

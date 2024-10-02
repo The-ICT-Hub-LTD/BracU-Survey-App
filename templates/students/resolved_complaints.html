@@ -33,7 +33,7 @@
 </div>
 
 {% if complaints %}
-<div class="container mt-5 ">
+<div class="container mt-2 ">
     <div class="card">
         <div class="table-responsive">
             <div style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
@@ -45,9 +45,9 @@
                             <th style="text-align: center;">Image</th> -->
                             <th style="text-align: center;">Status</th>
                             <th style="text-align: center;">Issued</th>
-                            <th style="text-align: center;">Solution</th>
+                            <th style="text-align: center;">Solution Details</th>
                             <th style="text-align: center;">Solved At</th>
-                            <th style="text-align: center;">Attachemnt</th>
+                            <th style="text-align: center;">Solved Attachemnt</th>
                             <!-- <th style="text-align: center;">Action</th> -->
                         </tr>
                     </thead>
@@ -63,9 +63,19 @@
                                     No image
                                 {% endif %}
                             </td> -->
-                            <td style="text-align: center;">{{ complaint.feedback_status }}</td>
+                            <td style="text-align: center; color:
+                            {% if complaint.feedback_status == 'Pending' %}
+                                red
+                            {% elif complaint.feedback_status == 'Solved' %}
+                                green
+                            {% elif complaint.feedback_status == 'On Process' %}
+                                blue
+                            {% endif %}
+                            ">
+                            {{ complaint.feedback_status }}
+                            </td>
                             <td style="text-align: center;">{{ complaint.submitted_at }}</td>
-                            <td>{{ complaint.solution_details | truncatechars:10 }}</td>
+                            <td>{{ complaint.solution_details | truncatechars:20 }}</td>
                             <td style="text-align: center;">{{ complaint.resolved_at }}</td>
                             <td style="text-align: center;">
                                 {% if complaint.resolved_image %}

@@ -26,7 +26,7 @@ class UserProfileManager(BaseUserManager):
         user = self.create_user(email, name, password)
 
         user.is_superuser = True
-        user.is_staff = True
+        user.is_staff = False
         user.save(using=self._db)
 
         return user
@@ -90,7 +90,7 @@ class Profile(models.Model):
 @receiver(post_save, sender=UserProfile)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     Profile.objects.get_or_create(user=instance)  
-      
+
 
 # Custom validator for student ID
 def validate_student_id(value):

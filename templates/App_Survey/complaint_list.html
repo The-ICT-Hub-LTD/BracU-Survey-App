@@ -28,7 +28,7 @@ All Feedbacks
                 <h3 style="color: white">.</h3>
                 <button type="submit" class="btn btn-primary btn-sm">Search</button>
                 <a href="{% url 'App_Survey:complaint_list' %}" class="btn btn-secondary btn-sm">X</a>
-                <span class="mdi-lock-reset"></span>
+                <!-- <span class="mdi-lock-reset"></span> -->
               </div>
           </div>
       </form>
@@ -69,7 +69,17 @@ All Feedbacks
                         No image
                     {% endif %}
                 </td>
-                <td>{{ complain.feedback_status }}</td>
+                <td style="text-align: center; color:
+                            {% if complain.feedback_status == 'Pending' %}
+                                red
+                            {% elif complain.feedback_status == 'Solved' %}
+                                green
+                            {% elif complain.feedback_status == 'On Process' %}
+                                blue
+                            {% endif %}
+                            ">
+                            {{ complain.feedback_status }}
+                            </td>
                 <td>{{ complain.submitted_at }}</td>
                 <td>
                   <button
@@ -138,7 +148,7 @@ All Feedbacks
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalFormTitle">Complaint Details</h5>
+        <h5 class="modal-title" id="exampleModalFormTitle">Feedback Details</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -183,7 +193,7 @@ All Feedbacks
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">Edit Complain</h5>
+        <h5 class="modal-title" id="editModalLabel">Update Feedback With Solution</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

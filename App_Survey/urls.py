@@ -5,7 +5,7 @@ app_name = 'App_Survey'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('submit-feedbacks/', views.submit_complain, name='submit_complain'),
+    path('student-feedbacks/', views.submit_complain, name='submit_complain'),
     path('resolve-complain/<int:complain_id>/', views.resolve_complain, name='resolve_complain'),
     path('search-resolved/', views.search_resolved_complain, name='search_resolved_complain'),
     path('submission-complete/', views.submission_complete, name='submission_complete'),

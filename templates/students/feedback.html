@@ -3,7 +3,6 @@
 {% block content %}
 <div class="container mt-5">
     <div class="card">
-        <!-- Success Alert -->
         <div id="successAlert" class="alert alert-success alert-dismissible fade" role="alert" style="display: none;">
             <strong>Success!</strong> Your feedback has been submitted successfully.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -38,27 +37,23 @@
                 </button>
             </form>
         </div>
-        <div class="card-footers">
-        </div>
+        <div class="card-footers"></div>
     </div>
 </div>
 
 <script>
-// JavaScript to show alert and handle redirection
 document.getElementById('feedbackForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Show spinner and disable submit button
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const spinner = document.getElementById('spinner');
     submitBtn.disabled = true;
     submitText.style.display = 'none';
     spinner.style.display = 'inline-block';
-    
-    // Simulate an AJAX call here to submit the form
+
     const formData = new FormData(this);
-    
+
     fetch("{% url 'App_Survey:submit_complain' %}", {
         method: "POST",
         body: formData,
@@ -66,16 +61,15 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
             'X-CSRFToken': '{{ csrf_token }}'
         }
     })
-    .then(response => {
-        if (response.ok) {
-            // Redirect to the submission_complete page after successful submission
-            window.location.href = "{% url 'App_Survey:submission_complete' %}";
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
         } else {
-            // Handle error response if necessary
-            console.error('Error submitting feedback');
             submitBtn.disabled = false;
             submitText.style.display = 'inline';
             spinner.style.display = 'none';
+            console.error('Error:', data.errors);
         }
     })
     .catch(error => {

@@ -26,8 +26,9 @@ All Users
                 <th>Name</th>
                 <th>Is Active</th>
                 <th>Is Staff</th>
-                <th>View</th>
-                <th>Update</th>
+                <th>Is Super User</th>
+                <!-- <th>View</th>
+                <th>Update</th> -->
               <th></th>
             </tr>
           </thead>
@@ -39,12 +40,13 @@ All Users
                 <td>{{ user_profile.name }}</td>
                 <td>{{ user_profile.is_active }}</td>
                 <td>{{ user_profile.is_staff }}</td>
-                <td>
+                <td>{{ user_profile.is_superuser }}</td>
+                <!-- <td>
                     <a href="{% url 'App_Survey:view_profile' user_profile.id %}">View</a> 
                 </td>
                 <td>
                     <a href="{% url 'App_Survey:update_profile' user_profile.id %}">Edit</a>
-                </td>
+                </td> -->
             </tr>
             {% endfor %}
           </tbody>
