@@ -48,6 +48,10 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const spinner = document.getElementById('spinner');
+    const successAlert = document.getElementById('successAlert');
+    const form = this;
+
+    // Disable button, show spinner
     submitBtn.disabled = true;
     submitText.style.display = 'none';
     spinner.style.display = 'inline-block';
@@ -63,9 +67,25 @@ document.getElementById('feedbackForm').addEventListener('submit', function(even
     })
     .then(response => response.json())
     .then(data => {
-        if (data.redirect_url) {
-            window.location.href = data.redirect_url;
+        if (data.success) {
+            // Show success message
+            successAlert.style.display = 'block';
+            successAlert.classList.add('show');
+
+            // Reset form
+            form.reset();
+
+            // Hide spinner and re-enable button
+            submitBtn.disabled = false;
+            submitText.style.display = 'inline';
+            spinner.style.display = 'none';
+
+            // Redirect after a delay
+            setTimeout(function() {
+                window.location.href = data.redirect_url;
+            }, 2000);
         } else {
+            // Handle errors
             submitBtn.disabled = false;
             submitText.style.display = 'inline';
             spinner.style.display = 'none';

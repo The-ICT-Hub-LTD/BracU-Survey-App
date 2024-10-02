@@ -44,7 +44,12 @@ def submit_complain(request):
                 fail_silently=False
             )
 
-            return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
+            # return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
+            return JsonResponse({
+                'success': True,
+                'message': 'Your feedback has been submitted successfully.',
+                'redirect_url': reverse('App_Survey:home')
+            })
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     
