@@ -29,20 +29,23 @@ def submit_complain(request):
             # Save the form
             complain = form.save()
 
-            subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
-            message = f"Student Name: {complain.student_name}\n" \
-                      f"Student ID: {complain.student_id}\n" \
-                      f"Feedback Details: {complain.problem_details}\n"                              
-            recipients = ['shovonmufrid98@gmail.com', 'm3shovon.dev@gmail.com', 'mia.md.mufrid@gmail.com']
-            
-            # Send email
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                recipients,
-                fail_silently=False
-            )
+            try:
+                subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
+                message = f"Student Name: {complain.student_name}\n" \
+                        f"Student ID: {complain.student_id}\n" \
+                        f"Feedback Details: {complain.problem_details}\n"                              
+                recipients = ['shovonmufrid98@gmail.com', 'm3shovon.dev@gmail.com', 'mia.md.mufrid@gmail.com','sadik061@gmail.com']
+                
+                # Send email
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    recipients,
+                    fail_silently=False
+                )
+            except:
+                pass
 
             # return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
             return JsonResponse({
