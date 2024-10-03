@@ -105,11 +105,22 @@ class Complain(models.Model):
         SOLVED = 'Solved', 'Solved'
         ON_PROCESS = 'On Process', 'On Process'
 
+    class CategoryStatus(models.TextChoices):
+        NONE = 'None', 'None'
+        FOREIGN_MATERIAL = 'Foreign Material', 'Foreign Material'
+        PERSONAL_HYGIENE = 'Personal Hygiene', 'Personal Hygiene'
+        FOOD_QUALITY = 'Food Quality', 'Food Quality'
+        OTHERS = 'Others', 'Others'
+
     student_name = models.CharField(max_length=100, blank=True, null=True)
     student_id = models.CharField(max_length=8, validators=[validate_student_id])
+    category = models.CharField(max_length=20, choices=CategoryStatus.choices, default=CategoryStatus.NONE)
     problem_details = models.TextField()
     complain_image = models.ImageField(upload_to='complain_images/', blank=True, null=True)
     is_resolved = models.BooleanField(default=False)
+    is_valid = models.BooleanField(default=False)
+    invoice_no = models.CharField(max_length=20, blank=True, null=True)
+    invoice_image = models.ImageField(upload_to='invoice_images/', blank=True, null=True)
     resolved_image = models.ImageField(upload_to='resolved_images/', blank=True, null=True)
     solution_details = models.TextField(blank=True, null=True, default="Pending")
     feedback_status = models.CharField(max_length=10, choices=FeedbackStatus.choices, default=FeedbackStatus.PENDING)

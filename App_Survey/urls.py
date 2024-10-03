@@ -22,6 +22,7 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.view_profile, name='view_profile'),
     path('profile/update/<int:user_id>/', views.update_profile, name='update_profile'),
     path('userprofiles/', views.user_profile_list, name='user_profile_list'),
+    path('complaints/export/csv/', views.export_complaints_csv, name='export_complaints_csv'),
     # path('accounts/', include('allauth.urls')),
     
 ]

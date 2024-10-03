@@ -18,6 +18,8 @@ from django.db.models import Q
 from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
+import csv
+from django.http import HttpResponse
 
 def home(request):
     return render(request, 'students/home.html')
@@ -33,8 +35,10 @@ def submit_complain(request):
                 subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
                 message = f"Student Name: {complain.student_name}\n" \
                         f"Student ID: {complain.student_id}\n" \
+                        f"Student ID: {complain.category}\n" \
+                        f"Student ID: {complain.invoice_no}\n" \
                         f"Feedback Details: {complain.problem_details}\n"                              
-                recipients = ['shovonmufrid98@gmail.com', 'm3shovon.dev@gmail.com', 'mia.md.mufrid@gmail.com','sadik061@gmail.com']
+                recipients = ['testnetworkeverything@gmail.com']
                 
                 # Send email
                 send_mail(
@@ -47,12 +51,12 @@ def submit_complain(request):
             except:
                 pass
 
-            # return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
-            return JsonResponse({
-                'success': True,
-                'message': 'Your feedback has been submitted successfully.',
-                'redirect_url': reverse('App_Survey:home')
-            })
+            return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
+            # return JsonResponse({
+            #     'success': True,
+            #     'message': 'Your feedback has been submitted successfully.',
+            #     'redirect_url': reverse('App_Survey:home')
+            # })
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     
@@ -276,3 +280,74 @@ def update_profile(request, user_id):
 def user_profile_list(request):
     user_profiles = UserProfile.objects.all()
     return render(request, 'profile/profile_list.html', {'user_profiles': user_profiles})
+
+# Download CSV
+
+
+@staff_member_required
+def export_complaints_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="complaints.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Images', 'Status', 'Issued'])
+
+    # Get the complaints data
+    complaints = Complain.objects.all().order_by('-id')
+
+    # Write the data rows
+    for idx, complain in enumerate(complaints, start=1):
+        writer.writerow([
+            idx,
+            complain.student_name,
+            complain.student_id,
+            complain.problem_details,
+            complain.complain_image.url if complain.complain_image else 'No image',
+            complain.feedback_status,
+            complain.submitted_at
+        ])
+
+    return response
+
+# @staff_member_required
+# def export_complaints_csv(request):
+#     # Create the HttpResponse object with the appropriate CSV header.
+#     response = HttpResponse(content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="complaints.csv"'
+
+#     writer = csv.writer(response)
+#     writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Images', 'Status', 'Issued'])
+
+#     # Get filter inputs
+#     start_date = request.GET.get('start_date')
+#     end_date = request.GET.get('end_date')
+#     student_id = request.GET.get('student_id')
+
+#     # Get the complaints data
+#     complaints = Complain.objects.all().order_by('-id')
+
+#     # Filter by date range
+#     if start_date and end_date:
+#         try:
+#             start_date = datetime.strptime(start_date, '%Y-%m-%d')
+#             end_date = datetime.strptime(end_date, '%Y-%m-%d')
+#             complaints = complaints.filter(submitted_at__date__range=[start_date, end_date])
+#         except ValueError:
+#             pass
+
+#     # Filter by student_id
+#     if student_id:
+#         complaints = complaints.filter(student_id__icontains=student_id)
+
+#     # Write the data rows
+#     for idx, complain in enumerate(complaints, start=1):
+#         writer.writerow([
+#             idx,
+#             complain.student_name,
+#             complain.student_id,
+#             complain.problem_details,
+#             complain.complain_image.url if complain.complain_image else 'No image',
+#             complain.feedback_status,
+#             complain.submitted_at
+#         ])
+
+#     return response

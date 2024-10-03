@@ -146,6 +146,57 @@ label {
     display: block;
     margin-top: 10px;
 }
+/* General styles for the form */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-control, .form-control-file, .category-select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 16px;
+}
+
+.form-control:focus, .category-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Custom styles for the category select */
+.category-select {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.category-select option {
+    padding: 10px;
+}
+
+/* Button styles */
+/* #submitBtn {
+    display: inline-flex;
+    align-items: center;
+}
+
+#submitText {
+    margin-right: 10px;
+}
+
+#spinner {
+    display: none;
+}
+
+#submitBtn:disabled #spinner {
+    display: inline-block;
+} */
 
 /* Shadow effect for both buttons */
 .shadow-button {

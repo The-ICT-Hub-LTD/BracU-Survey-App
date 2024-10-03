@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 class ComplainForm(forms.ModelForm):
     class Meta:
         model = Complain
-        fields = ['student_name', 'student_id', 'problem_details', 'complain_image']
+        fields = ['student_name', 'student_id', 'category', 'problem_details', 'invoice_no', 'invoice_image', 'complain_image']
 
     def clean_student_id(self):
         student_id = self.cleaned_data['student_id']

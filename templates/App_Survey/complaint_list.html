@@ -12,7 +12,7 @@ All Feedbacks
       <div class="card-body">
         <form method="GET" id="filter-form" action="{% url 'App_Survey:complaint_list' %}">
           <div class="row mb-3">
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <label for="student-id">Student ID:</label>
               <input type="text" class="form-control" id="student-id" name="student_id" placeholder="Search by Student ID" value="{{ request.GET.student_id }}">
               </div>
@@ -24,11 +24,17 @@ All Feedbacks
                   <label for="end-date">End Date:</label>
                   <input type="date" class="form-control" id="end-date" name="end_date" value="{{ request.GET.end_date }}">
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
                 <h3 style="color: white">.</h3>
                 <button type="submit" class="btn btn-primary btn-sm">Search</button>
+              </div>
+              <div class="col-md-1">
+                <h3 style="color: white">.</h3>
                 <a href="{% url 'App_Survey:complaint_list' %}" class="btn btn-secondary btn-sm">X</a>
-                <!-- <span class="mdi-lock-reset"></span> -->
+              </div>
+              <div class="col-md-2">
+                <h3 style="color: white">.</h3>
+                <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm">CSV</a>
               </div>
           </div>
       </form>
@@ -44,14 +50,18 @@ All Feedbacks
           <thead>
             <tr>
                 <th>SL</th>
-                <th>Name</th>
                 <th>UID</th>
-                <th>Feedback</th>
-                <th>Images</th>
+                <th>Name</th>
+                <th>Category</th>
+                <!-- <th>Feedback</th> -->
+                <th>Invoice</th>
+                <th>Complain Image</th>
                 <th>Status</th>
                 <th>Issued</th>
-                <th>View</th>
-                <th>Action</th>
+                {% if request.user.is_superuser %}
+                  <th>View</th>
+                  <th>Action</th>
+                {% endif %}
               <th></th>
             </tr>
           </thead>
@@ -59,9 +69,17 @@ All Feedbacks
             {% for complain in complaints %}
             <tr id="complain-row-{{ complain.id }}">
                 <td>{{ forloop.counter }}</td>
-                <td>{{ complain.student_name }}</td>
                 <td>{{ complain.student_id }}</td>
-                <td  style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ complain.problem_details | truncatechars:10  }}</td>
+                <td>{{ complain.student_name }}</td>
+                <td>{{ complain.category }}</td>
+                <!-- <td  style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ complain.problem_details | truncatechars:10  }}</td> -->
+                <td style="text-align: center;">
+                    {% if complain.invoice_image %}
+                        <span class="mdi mdi-image-multiple large" style="cursor: pointer;" onclick="viewImage('{{ complain.invoice_image.url }}')" ></span>
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
                 <td style="text-align: center;">
                     {% if complain.complain_image %}
                         <span class="mdi mdi-image-multiple large" style="cursor: pointer;" onclick="viewImage('{{ complain.complain_image.url }}')" ></span>
@@ -81,26 +99,29 @@ All Feedbacks
                             {{ complain.feedback_status }}
                             </td>
                 <td>{{ complain.submitted_at }}</td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-info btn-pill btn-sm"
-                    data-toggle="modal"
-                    data-target="#exampleModalForm"
-                    onclick="viewComplainDetails(
-                        '{{ complain.student_name }}', 
-                        '{{ complain.student_id }}', 
-                        '{{ complain.problem_details }}', 
-                        {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
-                        '{{ complain.submitted_at }}', 
-                        '{{ complain.feedback_status }}')">
-                    View
-                  </button>
-                </td>
-                <td>
-                  <a href="#" class="btn btn-primary btn-sm btn-pill" data-toggle="modal" data-target="#editModal"
-                     onclick="openEditModal({{ complain.id }})">Solve</a>
-                </td>
+                {% if request.user.is_superuser %}
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-info btn-pill btn-sm"
+                      data-toggle="modal"
+                      data-target="#exampleModalForm"
+                      onclick="viewComplainDetails(
+                          '{{ complain.student_name }}', 
+                          '{{ complain.student_id }}', 
+                          '{{ complain.problem_details }}', 
+                          {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
+                          '{{ complain.submitted_at }}', 
+                          '{{ complain.feedback_status }}')">
+                      View
+                    </button>
+                  </td>
+                  <td>
+                    <a href="#" class="btn btn-primary btn-sm btn-pill" data-toggle="modal" data-target="#editModal"
+                      onclick="openEditModal({{ complain.id }})">Solve</a>
+                  </td>
+                {% endif %}
+
             </tr>
             {% endfor %}
           </tbody>
@@ -199,7 +220,6 @@ All Feedbacks
         </button>
       </div>
       <div class="modal-body" id="modalEditForm">
-        <!-- The form content will be loaded here via AJAX -->
       </div>
     </div>
   </div>
@@ -215,8 +235,8 @@ All Feedbacks
           url: "{% url 'App_Survey:edit_complain' 0 %}".replace(0, complainId),
           type: "GET",
           success: function(response) {
-              $('#modalEditForm').html(response.html);  // Load form content into modal body
-              $('#editModal').modal('show');  // Display the modal
+              $('#modalEditForm').html(response.html); 
+              $('#editModal').modal('show'); 
           },
           error: function(xhr, status, error) {
               console.log("Error loading modal:", error);

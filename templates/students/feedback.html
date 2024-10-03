@@ -21,18 +21,35 @@
                 </div>
                 <div class="form-group">
                     <label for="student_id">Student UID<span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="student_id" name="student_id" pattern="\d{8}" title="Student ID must be 8 digits" maxlength="8" required>
+                    <input type="text" class="form-control" id="student_id" name="student_id" pattern="\d{8}" title="Student ID must be 8 digits & Alumni can use their last 8 digit" maxlength="8" required >
                 </div>
                 <div class="form-group">
-                    <label for="problem_details">Feedback Details<span style="color: red;">*</span></label>
+                    <label for="category">Complain Category<span style="color: red; font-size: 12px;"><i> (If Complain)</i></span></label>
+                    <select class="form-control category-select" id="category" name="category">
+                        <!-- <option value="" disabled selected>Select complain category</option> -->
+                        {% for value, name in form.category.field.choices %}
+                            <option value="{{ value }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="problem_details">Complain Details<span style="color: red;">*</span></label>
                     <textarea class="form-control" id="problem_details" name="problem_details" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="complain_image">Upload Image (Optional)</label>
+                    <label for="invoice_no">Invoice No.<span style="color: red; font-size: 12px;"><i> (If Complain)</i></span></label>
+                    <input type="text" class="form-control" id="invoice_no" name="invoice_no">
+                </div>
+                <div class="form-group">
+                    <label for="invoice_image">Upload Invoice<span style="color: red; font-size: 12px;"><i> (If Complain)</i></span></label>
+                    <input type="file" class="form-control-file" id="invoice_image" name="invoice_image">
+                </div>
+                <div class="form-group">
+                    <label for="complain_image">Upload Complain Image (Optional)</label>
                     <input type="file" class="form-control-file" id="complain_image" name="complain_image">
                 </div>
                 <button type="submit" id="submitBtn" class="btn btn-primary">
-                    <span id="submitText">Submit Feedback</span>
+                    <span id="submitText">Submit</span>
                     <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </button>
             </form>
@@ -42,63 +59,42 @@
 </div>
 
 <script>
-document.getElementById('feedbackForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const submitBtn = document.getElementById('submitBtn');
-    const submitText = document.getElementById('submitText');
-    const spinner = document.getElementById('spinner');
-    const successAlert = document.getElementById('successAlert');
-    const form = this;
-
-    // Disable button, show spinner
-    submitBtn.disabled = true;
-    submitText.style.display = 'none';
-    spinner.style.display = 'inline-block';
-
-    const formData = new FormData(this);
-
-    fetch("{% url 'App_Survey:submit_complain' %}", {
-        method: "POST",
-        body: formData,
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show success message
-            successAlert.style.display = 'block';
-            successAlert.classList.add('show');
-
-            // Reset form
-            form.reset();
-
-            // Hide spinner and re-enable button
-            submitBtn.disabled = false;
-            submitText.style.display = 'inline';
-            spinner.style.display = 'none';
-
-            // Redirect after a delay
-            setTimeout(function() {
+    document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const spinner = document.getElementById('spinner');
+        submitBtn.disabled = true;
+        submitText.style.display = 'none';
+        spinner.style.display = 'inline-block';
+    
+        const formData = new FormData(this);
+    
+        fetch("{% url 'App_Survey:submit_complain' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
                 window.location.href = data.redirect_url;
-            }, 2000);
-        } else {
-            // Handle errors
+            } else {
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                spinner.style.display = 'none';
+                console.error('Error:', data.errors);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             submitBtn.disabled = false;
             submitText.style.display = 'inline';
             spinner.style.display = 'none';
-            console.error('Error:', data.errors);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        submitBtn.disabled = false;
-        submitText.style.display = 'inline';
-        spinner.style.display = 'none';
+        });
     });
-});
-</script>
-
+    </script>
 {% endblock %}
