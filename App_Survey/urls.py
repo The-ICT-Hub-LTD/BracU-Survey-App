@@ -23,6 +23,8 @@ urlpatterns = [
     path('profile/update/<int:user_id>/', views.update_profile, name='update_profile'),
     path('userprofiles/', views.user_profile_list, name='user_profile_list'),
     path('complaints/export/csv/', views.export_complaints_csv, name='export_complaints_csv'),
+    path('solutions/export/csv/', views.export_solution_csv, name='export_solution_csv'),
+    path('complaints/export/pdf/', views.export_complaints_pdf, name='export_complaints_pdf'),
     # path('accounts/', include('allauth.urls')),
     
 ]

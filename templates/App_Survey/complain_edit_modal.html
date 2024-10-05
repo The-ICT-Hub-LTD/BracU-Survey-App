@@ -13,12 +13,17 @@
       <textarea class="form-control" id="problemDetails" rows="3" readonly>{{ complain.problem_details }}</textarea>
     </div>
     <div class="form-group">
-      <label for="solutionDetails">Solution Details</label>
-      <textarea class="form-control styled-textarea" id="solutionDetails" name="solution_details">{{ form.solution_details.value }}</textarea>
+      <label for="feedbackStatus">Invoice No.</label>
+      <input type="text" class="form-control" id="studentID" value="{{ complain.invoice_no }}" readonly>
     </div>
+
     <div class="form-group">
       <label for="feedbackStatus">Feedback Status</label>
       {{ form.feedback_status }}
+    </div>
+    <div class="form-group">
+      <label for="solutionDetails">Solution Details</label>
+      <textarea class="form-control styled-textarea" id="solutionDetails" name="solution_details">{{ form.solution_details.value }}</textarea>
     </div>
     <div class="form-group">
       <label for="resolvedImage">Resolved Image</label>
@@ -28,7 +33,7 @@
       <label for="resolvedAt">Resolved At</label>
       {{ form.resolved_at }}
     </div>
-    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn btn-primary">Update Complain</button>
   </form>
   
   <script>

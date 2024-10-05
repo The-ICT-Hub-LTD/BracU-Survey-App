@@ -84,3 +84,5 @@ django-filter
 social-auth-app-django
 django-allauth
 
+openpyxl
+reportlab

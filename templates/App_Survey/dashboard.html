@@ -1,91 +1,166 @@
 {% extends 'layouts/base.html' %} 
-{% load static %}
+{% load static %} 
 {% block span_block %} 
-
-{% endblock span_block %} 
+{% endblock span_block %}
 <!-- {{ current_user_email }} -->
 {% block body_block %}
 
-
-    <!-- User Sessions Bounce -->
-    
-
-    <div class="row">
-      <div class="col-xl-4">
-        <!-- User -->
-        <div class="card card-default" style="box-shadow:  0px 6px 15px rgba(0, 0, 0, 0.1)">
-          <div class="card-header">
-            <h2>Total Feedbacks</h2>
-          </div>
-          <div class="card-body">
-            <div
-              class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
-            >
-              <div class="d-flex flex-column">
-                <span class="h3 text-white">{{ total_complaints }}</span>
-                <!-- <span>vs 275,900 (prev)</span> -->
-              </div>
-              <!-- <div>
-                <span>45%</span>
-                <i class="mdi mdi-arrow-up-bold"></i>
-              </div> -->
-            </div>
-            <!-- <div id="line-chart-1"></div> -->
+<div class="row">
+  <div class="col-xl-4">
+    <div
+      class="card card-default"
+      style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
+    >
+      <div class="card-header">
+        <h2>Total Feedbacks</h2>
+      </div>
+      <div class="card-body">
+        <div
+          class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
+        >
+          <div class="d-flex flex-column">
+            <span class="h3 text-white">{{ total_complaints }}</span>
           </div>
         </div>
+        <!-- <div id="line-chart-1"></div> -->
       </div>
-      <div class="col-xl-4">
-        <!-- Session -->
-        <div class="card card-default" style="box-shadow:  0px 6px 15px rgba(0, 0, 0, 0.1)">
-          <div class="card-header">
-            <h2>Unresolved Feedbacks</h2>
-          </div>
-          <div class="card-body">
-            <div
-              class="bg-danger d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
-            >
-              <div class="d-flex flex-column">
-                <div>
-                  <span class="h3 text-white">{{ total_unresolved_complaints }}</span>
-                  <!-- <span class="mdi mdi-flag-minus align-items-lg-end"></span> -->
-                </div>
-
-              </div>
-              <!-- <div>
-                <span>55%</span>
-                <i class="mdi mdi-arrow-up-bold"></i>
-              </div> -->
-            </div>
-            <!-- <div id="line-chart-2"></div> -->
-          </div>
-        </div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <!-- Session -->
+    <div
+      class="card card-default"
+      style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
+    >
+      <div class="card-header">
+        <h2>Unresolved Feedbacks</h2>
       </div>
-      <div class="col-xl-4">
-        <!-- Bounce Rate -->
-        <div class="card card-default" style="box-shadow:  0px 6px 15px rgba(0, 0, 0, 0.1)">
-          <div class="card-header">
-            <h2>Resolved Feedbacks</h2>
-          </div>
-          <div class="card-body">
-            <div
-              class="bg-success d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
-            >
-              <div class="d-flex flex-column">
-                <span class="h3 text-white">{{ total_resolved_complaints }}</span>
-                <!-- <span>vs 65.21% (prev)</span> -->
-              </div>
-              <!-- <div>
-                <span>7%</span>
-                <i class="mdi mdi-arrow-down-bold"></i>
-              </div> -->
+      <div class="card-body">
+        <div
+          class="bg-danger d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
+        >
+          <div class="d-flex flex-column">
+            <div>
+              <span class="h3 text-white"
+                >{{ total_unresolved_complaints }}</span
+              >
             </div>
-            <!-- <div id="line-chart-3"></div> -->
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="col-xl-4">
+    <div
+      class="card card-default"
+      style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
+    >
+      <div class="card-header">
+        <h2>Resolved Feedbacks</h2>
+      </div>
+      <div class="card-body">
+        <div
+          class="bg-success d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
+        >
+          <div class="d-flex flex-column">
+            <span class="h3 text-white">{{ total_resolved_complaints }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
+      <div class="card-header">
+        <h2>Complain By Category</h2>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mt-4"  style="font-size: 20px;">
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-2 text-dark"
+          >
+            None
+            <span class="text-primary">{{ category_status_counts.None }}</span>
+          </li>
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-2 text-dark"
+          >
+            Foreign Material
+            <span class="text-success"
+              >{{ category_status_counts.Foreign_Material }}</span
+            >
+          </li>
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-2 text-dark"
+          >
+            Personal Hygiene
+            <span class="text-danger"
+              >{{ category_status_counts.Personal_Hygiene }}</span
+            >
+          </li>
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-2 text-dark"
+          >
+            Food Quality
+            <span class="text-danger"
+              >{{ category_status_counts.Food_Quality }}</span
+            >
+          </li>
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-2 text-dark"
+          >
+            Others
+            <span class="text-danger">{{ category_status_counts.Others }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
+  <div class="col-xl-6">
+    <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
+      <div class="card-header">
+        <h2>Complains From Student</h2>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mt-2"  style="font-size: 20px;">
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
+          >
+          <h4 style="margin-right: 10px;">Download CSV<span class="text-primary">
+            <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm"><span class="mdi mdi-download" style="font-size: 16px;"></span>
+            </a>
+           </span></h4>
     
+            <h4 style="margin-right: 10px;">Download PDF<span class="text-primary"></span>
+              <a href="{% url 'App_Survey:export_complaints_pdf' %}" class="btn btn-danger btn-sm"><span class="mdi mdi-download" style="font-size: 16px;"></span></a>
+            </span></h4>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
+      <!-- <div class="card-header">
+        <h2>Solutions From Khabardabar</h2> 
+      </div> -->
+      <div class="card-body">
+        <ul class="list-unstyled mt-0"  style="font-size: 20px;">
+          <li
+            class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
+          >
+          <h4 style="margin-right: 10px;">Solutions From Khabardabar<span class="text-primary">
+           
+              <a href="{% url 'App_Survey:export_solution_csv' %}" class="btn btn-success btn-sm">Download CSV</a>
+            </h4>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

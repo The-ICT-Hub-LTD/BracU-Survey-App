@@ -20,6 +20,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 import csv
 from django.http import HttpResponse
+from django.db.models import Count
+import openpyxl
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from openpyxl import Workbook
+
 
 def home(request):
     return render(request, 'students/home.html')
@@ -123,12 +129,25 @@ def admin_dashboard_view(request):
     total_complaints = total_resolved_complaints + total_unresolved_complaints
     current_user_email = request.user.email
 
+    category_counts = Complain.objects.values('category').annotate(count=Count('category'))
+    category_status_counts = {
+        'None': 0,
+        'Foreign_Material': 0,
+        'Personal_Hygiene': 0,
+        'Food_Quality': 0,
+        'Others': 0
+    }
+    for category in category_counts:
+        category_status_counts[category['category']] = category['count']
+
     context = {
         'total_active_profiles': total_active_profiles,
         'total_resolved_complaints': total_resolved_complaints,
         'total_unresolved_complaints': total_unresolved_complaints,
         'total_complaints': total_complaints,
         'current_user_email': current_user_email,  
+        'category_status_counts': category_status_counts,
+
     }
 
     return render(request, 'App_Survey/dashboard.html', context)
@@ -148,6 +167,7 @@ def complaint_list(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     student_id = request.GET.get('student_id')
+    category = request.GET.get('category') 
 
     # Filter by date range
     if start_date and end_date:
@@ -162,11 +182,16 @@ def complaint_list(request):
     if student_id:
         complaints = complaints.filter(student_id__icontains=student_id)
 
+    # Filter by category
+    if category and category != "None":
+        complaints = complaints.filter(category=category)
+
     # Pagination
     paginator = Paginator(complaints, 10) 
     page_number = request.GET.get('page')
     complaints = paginator.get_page(page_number)
-    return render(request, 'App_Survey/complaint_list.html', {'complaints': complaints})
+    categories = Complain.CategoryStatus.choices 
+    return render(request, 'App_Survey/complaint_list.html', {'complaints': complaints, 'categories': categories})
 
 @staff_member_required
 def edit_complain(request, complain_id):
@@ -289,7 +314,7 @@ def export_complaints_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="complaints.csv"'
     writer = csv.writer(response)
-    writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Images', 'Status', 'Issued'])
+    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued'])
 
     # Get the complaints data
     complaints = Complain.objects.all().order_by('-id')
@@ -300,54 +325,80 @@ def export_complaints_csv(request):
             idx,
             complain.student_name,
             complain.student_id,
+            complain.category,
             complain.problem_details,
-            complain.complain_image.url if complain.complain_image else 'No image',
+            # complain.complain_image.url if complain.complain_image else 'No image',
             complain.feedback_status,
             complain.submitted_at
         ])
 
     return response
 
-# @staff_member_required
-# def export_complaints_csv(request):
-#     # Create the HttpResponse object with the appropriate CSV header.
-#     response = HttpResponse(content_type='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename="complaints.csv"'
+@staff_member_required
+def export_solution_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="solution.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued', 'Solution', 'resolved_at'])
 
-#     writer = csv.writer(response)
-#     writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Images', 'Status', 'Issued'])
+    # Get the complaints data
+    complaints = Complain.objects.all().order_by('-id')
 
-#     # Get filter inputs
-#     start_date = request.GET.get('start_date')
-#     end_date = request.GET.get('end_date')
-#     student_id = request.GET.get('student_id')
+    # Write the data rows
+    for idx, complain in enumerate(complaints, start=1):
+        writer.writerow([
+            idx,
+            complain.student_name,
+            complain.student_id,
+            complain.category,
+            complain.problem_details,
+            # complain.complain_image.url if complain.complain_image else 'No image',
+            complain.feedback_status,
+            complain.submitted_at,
+            complain.solution_details,
+            complain.resolved_at,
+        ])
 
-#     # Get the complaints data
-#     complaints = Complain.objects.all().order_by('-id')
+    return response
 
-#     # Filter by date range
-#     if start_date and end_date:
-#         try:
-#             start_date = datetime.strptime(start_date, '%Y-%m-%d')
-#             end_date = datetime.strptime(end_date, '%Y-%m-%d')
-#             complaints = complaints.filter(submitted_at__date__range=[start_date, end_date])
-#         except ValueError:
-#             pass
 
-#     # Filter by student_id
-#     if student_id:
-#         complaints = complaints.filter(student_id__icontains=student_id)
+@staff_member_required
+def export_complaints_pdf(request):
+    # Create a HttpResponse object
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="complaints.pdf"'
 
-#     # Write the data rows
-#     for idx, complain in enumerate(complaints, start=1):
-#         writer.writerow([
-#             idx,
-#             complain.student_name,
-#             complain.student_id,
-#             complain.problem_details,
-#             complain.complain_image.url if complain.complain_image else 'No image',
-#             complain.feedback_status,
-#             complain.submitted_at
-#         ])
+    # Create a PDF object using ReportLab
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
 
-#     return response
+    # Title
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, height - 50, "Complaints Report")
+
+    # Set initial y-position for the table
+    y = height - 80
+    p.setFont("Helvetica", 12)
+
+    # Get complaints data
+    complaints = Complain.objects.all().order_by('-id')
+
+    # Add table headers
+    headers = ['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued']
+    p.drawString(30, y, ' | '.join(headers))
+
+    y -= 20
+
+    # Add data rows
+    for idx, complain in enumerate(complaints, start=1):
+        row = f"{idx} | {complain.student_name} | {complain.student_id} | {complain.category} | {complain.problem_details} | {complain.feedback_status} | {complain.submitted_at}"
+        p.drawString(30, y, row)
+        y -= 20
+        if y < 40:  # Create a new page if space is running out
+            p.showPage()
+            y = height - 50
+
+    p.showPage()
+    p.save()
+
+    return response
