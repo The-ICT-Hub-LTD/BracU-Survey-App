@@ -141,19 +141,21 @@ def admin_dashboard_view(request):
     total_complaints = total_resolved_complaints + total_unresolved_complaints
     current_user_email = request.user.email
 
-    category_counts = Complain.objects.values('category').annotate(count=Count('category'))
     category_status_counts = {
         'Foreign_Material': 0,
         'Personal_Hygiene': 0,
         'Food_Quality': 0,
         'Others': 0
     }
-    
- # Map the category counts to the category_status_counts dictionary
+    category_counts = Complain.objects.values('category').annotate(count=Count('category'))
+
     for category in category_counts:
-        category_name = category['category'].replace(' ', '_')
-        if category_name in category_status_counts:
-            category_status_counts[category_name] = category['count']
+        category_name = category['category']
+        if category_name:  # Check if category is not None
+            category_name = category_name.replace(' ', '_')
+            if category_name in category_status_counts:
+                category_status_counts[category_name] = category['count']
+
 
     context = {
         'total_active_profiles': total_active_profiles,
