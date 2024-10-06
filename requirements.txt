@@ -87,4 +87,5 @@ django-allauth
 openpyxl
 reportlab
 
-mysqlclient
+psycopg2==2.9.9
+psycopg2-binary

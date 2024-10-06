@@ -17,13 +17,25 @@ class ComplainForm(forms.ModelForm):
         if student_id == '12345678':  # Avoid serial number
             raise forms.ValidationError("Student ID cannot be 12345678.")
         return student_id
+    
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Complain
+        fields = ['student_name', 'student_id', 'problem_details']
+
+    def clean_student_id(self):
+        student_id = self.cleaned_data['student_id']
+        if not re.match(r'^\d{8}$', student_id):
+            raise forms.ValidationError("Student ID must be exactly 8 digits.")
+        return student_id
 
 class ResolveForm(forms.ModelForm):
     class Meta:
         model = Complain
-        fields = ['solution_details', 'feedback_status', 'resolved_image', 'resolved_at']
+        fields = ['solution_details', 'feedback_status','is_feedback', 'resolved_image', 'resolved_at']
         widgets = {
             'solution_details': forms.Textarea(attrs={'class': 'form-control styled-textarea'}),
+            'is_feedback': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'feedback_status': forms.Select(attrs={'class': 'form-control custom-select'}),
             'resolved_image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'resolved_at': forms.DateInput(

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from .models import Complain, Profile, UserProfile
-from .forms import ComplainForm, ResolveForm
+from .forms import ComplainForm, ResolveForm, FeedbackForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
@@ -35,14 +35,16 @@ def submit_complain(request):
         form = ComplainForm(request.POST, request.FILES)
         if form.is_valid():
             # Save the form
-            complain = form.save()
+            complain = form.save(commit=False)
+            complain.is_feedback = False
+            complain.save()
 
             try:
                 subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
                 message = f"Student Name: {complain.student_name}\n" \
                         f"Student ID: {complain.student_id}\n" \
-                        f"Student ID: {complain.category}\n" \
-                        f"Student ID: {complain.invoice_no}\n" \
+                        f"Complain Category : {complain.category}\n" \
+                        f"Invoice Number: {complain.invoice_no}\n" \
                         f"Feedback Details: {complain.problem_details}\n"                              
                 recipients = ['testnetworkeverything@gmail.com']
                 
@@ -58,16 +60,26 @@ def submit_complain(request):
                 pass
 
             return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
-            # return JsonResponse({
-            #     'success': True,
-            #     'message': 'Your feedback has been submitted successfully.',
-            #     'redirect_url': reverse('App_Survey:home')
-            # })
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     
     form = ComplainForm()
     return render(request, 'students/feedback.html', {'form': form})
+
+def submit_suggestion(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            suggestion = form.save(commit=False)
+            suggestion.is_feedback = True
+            suggestion.save()
+            return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    
+    form = FeedbackForm()
+    return render(request, 'students/suggestion.html', {'form': form})
+
 
 # For admins to resolve complaints
 @staff_member_required
@@ -131,14 +143,17 @@ def admin_dashboard_view(request):
 
     category_counts = Complain.objects.values('category').annotate(count=Count('category'))
     category_status_counts = {
-        'None': 0,
         'Foreign_Material': 0,
         'Personal_Hygiene': 0,
         'Food_Quality': 0,
         'Others': 0
     }
+    
+ # Map the category counts to the category_status_counts dictionary
     for category in category_counts:
-        category_status_counts[category['category']] = category['count']
+        category_name = category['category'].replace(' ', '_')
+        if category_name in category_status_counts:
+            category_status_counts[category_name] = category['count']
 
     context = {
         'total_active_profiles': total_active_profiles,
@@ -161,7 +176,7 @@ def signout_user(request):
 
 @staff_member_required
 def complaint_list(request):
-    complaints = Complain.objects.all().order_by('-id')
+    complaints = Complain.objects.filter(is_feedback=False).order_by('-id')
 
     # Get filter inputs
     start_date = request.GET.get('start_date')
@@ -194,25 +209,53 @@ def complaint_list(request):
     return render(request, 'App_Survey/complaint_list.html', {'complaints': complaints, 'categories': categories})
 
 @staff_member_required
+def suggestion_list(request):
+    suggestions = Complain.objects.filter(is_feedback=True).order_by('-id')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    student_id = request.GET.get('student_id')
+
+    # Date range filter
+    if start_date and end_date:
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            suggestions = suggestions.filter(submitted_at__date__range=[start_date, end_date])
+        except ValueError:
+            pass 
+
+    # Student ID filter
+    if student_id:
+        suggestions = suggestions.filter(student_id__icontains=student_id)
+
+    # Pagination
+    paginator = Paginator(suggestions, 10)
+    page_number = request.GET.get('page')
+    suggestions = paginator.get_page(page_number)
+
+    categories = Complain.CategoryStatus.choices
+    return render(request, 'App_Survey/feedback_list.html', {'complaints': suggestions,})
+
+@staff_member_required
 def edit_complain(request, complain_id):
     complain = get_object_or_404(Complain, id=complain_id)
     if request.method == 'POST':
         form = ResolveForm(request.POST, request.FILES, instance=complain)
         if form.is_valid():
             form.save()
-            return JsonResponse({'success': True})  # Respond with success
+            return JsonResponse({'success': True}) 
     else:
         form = ResolveForm(instance=complain)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html = render_to_string('App_Survey/complain_edit_modal.html', {'form': form, 'complain': complain}, request=request)
-        return JsonResponse({'html': html})  # Return the modal content
+        return JsonResponse({'html': html}) 
 
     return render(request, 'App_Survey/complain_edit.html', {'form': form, 'complain': complain})
 
 @staff_member_required
 def resolved_feedback_list(request):
-    complaint = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
+    complaint = Complain.objects.filter(is_resolved=True).order_by('-id')
     paginator = Paginator(complaint, 10) 
     page_number = request.GET.get('page')
     complaints = paginator.get_page(page_number)
@@ -317,7 +360,7 @@ def export_complaints_csv(request):
     writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued'])
 
     # Get the complaints data
-    complaints = Complain.objects.all().order_by('-id')
+    complaints = Complain.objects.filter(is_feedback=False).order_by('-id')
 
     # Write the data rows
     for idx, complain in enumerate(complaints, start=1):
@@ -339,10 +382,10 @@ def export_solution_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="solution.csv"'
     writer = csv.writer(response)
-    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued', 'Solution', 'resolved_at'])
+    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
 
     # Get the complaints data
-    complaints = Complain.objects.all().order_by('-id')
+    complaints = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
 
     # Write the data rows
     for idx, complain in enumerate(complaints, start=1):
@@ -353,6 +396,31 @@ def export_solution_csv(request):
             complain.category,
             complain.problem_details,
             # complain.complain_image.url if complain.complain_image else 'No image',
+            complain.feedback_status,
+            complain.submitted_at,
+            complain.solution_details,
+            complain.resolved_at,
+        ])
+
+    return response
+
+@staff_member_required
+def export_feedback_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="feedback.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
+
+    # Get the complaints data
+    complaints = Complain.objects.filter(is_feedback=True).order_by('-id')
+
+    # Write the data rows
+    for idx, complain in enumerate(complaints, start=1):
+        writer.writerow([
+            idx,
+            complain.student_name,
+            complain.student_id,
+            complain.problem_details,
             complain.feedback_status,
             complain.submitted_at,
             complain.solution_details,

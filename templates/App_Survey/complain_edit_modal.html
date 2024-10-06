@@ -13,10 +13,14 @@
       <textarea class="form-control" id="problemDetails" rows="3" readonly>{{ complain.problem_details }}</textarea>
     </div>
     <div class="form-group">
-      <label for="feedbackStatus">Invoice No.</label>
+      <label for="invoiceNo">Invoice No.</label>
       <input type="text" class="form-control" id="studentID" value="{{ complain.invoice_no }}" readonly>
     </div>
 
+    <div class="form-group form-check">
+      {{ form.is_feedback }}
+      <label class="form-check-label" for="id_is_feedback">Suggestion Feedback</label>
+    </div>
     <div class="form-group">
       <label for="feedbackStatus">Feedback Status</label>
       {{ form.feedback_status }}

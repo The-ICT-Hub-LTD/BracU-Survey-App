@@ -12,7 +12,11 @@
 
                 <div class="card-body mt-2 mb-5">
                     <!-- Feedback Button at the top -->
-                    <a href="{% url 'App_Survey:submit_complain' %}" class="btn btn-primary btn-lg btn-block shadow-button mb-4">
+                    <a href="{% url 'App_Survey:submit_suggestion' %}"  style="background-color:rgb(28, 116, 167)" class="btn btn-primary btn-lg btn-block shadow-button mb-4">
+                        Feedback
+                    </a>
+
+                    <a href="{% url 'App_Survey:submit_complain' %}" style="background-color:red" class="btn btn-danger btn-lg btn-block shadow-button mb-4">
                         Complain
                     </a>
 
