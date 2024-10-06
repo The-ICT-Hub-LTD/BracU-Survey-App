@@ -86,3 +86,5 @@ django-allauth
 
 openpyxl
 reportlab
+
+mysqlclient
