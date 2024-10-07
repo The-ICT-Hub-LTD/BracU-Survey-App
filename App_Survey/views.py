@@ -25,6 +25,7 @@ import openpyxl
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from openpyxl import Workbook
+from Core.settings import DEFAULT_FROM_EMAIL
 
 
 def home(request):
@@ -41,18 +42,18 @@ def submit_complain(request):
 
             try:
                 subject = f"New Feedback From Khabardabar Catering is Submitted by {complain.student_id}"
-                message = f"Student Name: {complain.student_name}\n" \
-                        f"Student ID: {complain.student_id}\n" \
+                message = f"Name: {complain.student_name}\n" \
+                        f"ID: {complain.student_id}\n" \
                         f"Complain Category : {complain.category}\n" \
                         f"Invoice Number: {complain.invoice_no}\n" \
                         f"Feedback Details: {complain.problem_details}\n"                              
-                recipients = ['testnetworkeverything@gmail.com']
+                recipients = ['testnetworkeverything@gmail.com','shovonmufrid98@gmail.com']
                 
                 # Send email
                 send_mail(
                     subject,
                     message,
-                    settings.DEFAULT_FROM_EMAIL,
+                    DEFAULT_FROM_EMAIL,
                     recipients,
                     fail_silently=False
                 )
@@ -138,7 +139,9 @@ def admin_dashboard_view(request):
     total_active_profiles = Profile.objects.filter(user__is_active=True).count()
     total_resolved_complaints = Complain.objects.filter(is_resolved=True).count()
     total_unresolved_complaints = Complain.objects.filter(is_resolved=False).count()
-    total_complaints = total_resolved_complaints + total_unresolved_complaints
+    total_complain = Complain.objects.filter(is_resolved=False).count()
+    total_feedback = Complain.objects.filter(is_resolved=True).count()
+    total_complaints = total_complain + total_feedback
     current_user_email = request.user.email
 
     category_status_counts = {
@@ -164,6 +167,8 @@ def admin_dashboard_view(request):
         'total_complaints': total_complaints,
         'current_user_email': current_user_email,  
         'category_status_counts': category_status_counts,
+        'total_complain': total_complain,
+        'total_feedback': total_feedback,
 
     }
 
@@ -200,7 +205,8 @@ def complaint_list(request):
         complaints = complaints.filter(student_id__icontains=student_id)
 
     # Filter by category
-    if category and category != "None":
+    # if category and category != "None":
+    if category:
         complaints = complaints.filter(category=category)
 
     # Pagination
@@ -361,8 +367,19 @@ def export_complaints_csv(request):
     writer = csv.writer(response)
     writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued'])
 
-    # Get the complaints data
+    # Retrieve date range from the request
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Filter complaints by date range if provided
     complaints = Complain.objects.filter(is_feedback=False).order_by('-id')
+    if start_date and end_date:
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            complaints = complaints.filter(submitted_at__date__range=[start_date, end_date])
+        except ValueError:
+            pass
 
     # Write the data rows
     for idx, complain in enumerate(complaints, start=1):
@@ -372,7 +389,6 @@ def export_complaints_csv(request):
             complain.student_id,
             complain.category,
             complain.problem_details,
-            # complain.complain_image.url if complain.complain_image else 'No image',
             complain.feedback_status,
             complain.submitted_at
         ])

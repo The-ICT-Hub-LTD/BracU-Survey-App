@@ -19,12 +19,12 @@ All Feedbacks
               <div class="col-md-2">
                 <label for="category">Category:</label>
                 <select class="form-control" id="category" name="category">
-                    <!-- <option value="None">All Categories</option> -->
-                    {% for value, label in categories %}
-                        <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
+                  <option value="" {% if not request.GET.category %}selected{% endif %}>All Categories</option>
+                  {% for value, label in categories %}
+                      <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
                 </select>
-            </div>
+              </div>
               <div class="col-md-2">
                   <label for="start-date">Start Date:</label>
                   <input type="date" class="form-control" id="start-date" name="start_date" value="{{ request.GET.start_date }}">
@@ -43,10 +43,11 @@ All Feedbacks
               </div>
               <div class="col-md-2">
                 <h3 style="color: white">.</h3>
-                <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm">CSV Download</a>
+                <a href="{% url 'App_Survey:export_complaints_csv' %}?start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success btn-sm">CSV Download</a>
+
               </div>
           </div>
-      </form>
+        </form>
       
         <div class="collapse" id="collapse-data-tables">
           <pre class="language-html mb-4"></pre>

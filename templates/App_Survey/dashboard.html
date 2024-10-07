@@ -6,13 +6,13 @@
 {% block body_block %}
 
 <div class="row">
-  <div class="col-xl-4">
+  <div class="col-xl-3">
     <div
       class="card card-default"
       style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
     >
       <div class="card-header">
-        <h2>Total Feedbacks</h2>
+        <h2>Total Submissions</h2>
       </div>
       <div class="card-body">
         <div
@@ -26,14 +26,14 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-4">
+  <div class="col-xl-3">
     <!-- Session -->
     <div
       class="card card-default"
       style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
     >
       <div class="card-header">
-        <h2>Unresolved Feedbacks</h2>
+        <h2>Total Complains</h2>
       </div>
       <div class="card-body">
         <div
@@ -42,7 +42,7 @@
           <div class="d-flex flex-column">
             <div>
               <span class="h3 text-white"
-                >{{ total_unresolved_complaints }}</span
+                >{{ total_complain }}</span
               >
             </div>
           </div>
@@ -50,13 +50,32 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-4">
+  <div class="col-xl-3">
     <div
       class="card card-default"
       style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
     >
       <div class="card-header">
-        <h2>Resolved Feedbacks</h2>
+        <h2>Total Feedbacks</h2>
+      </div>
+      <div class="card-body">
+        <div
+          class="bg-secondary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end"
+        >
+          <div class="d-flex flex-column">
+            <span class="h3 text-white">{{ total_feedback }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3">
+    <div
+      class="card card-default"
+      style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)"
+    >
+      <div class="card-header">
+        <h2>Total Resolved</h2>
       </div>
       <div class="card-body">
         <div
@@ -115,25 +134,40 @@
   </div>
 
   <div class="col-xl-6">
-    <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
-      <div class="card-header">
-        <h2>Complains From Student</h2>
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
+          <div class="card-body">
+            <ul class="list-unstyled mt-2"  style="font-size: 20px;">
+              <li
+                class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
+              >
+              <h6 style="margin-right: 10px;">All Complains<span class="text-primary">
+                <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm">CSV <span class="mdi mdi-download" style="font-size: 16px;"></span>
+                </a>
+               </span>
+              </h6>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <ul class="list-unstyled mt-2"  style="font-size: 20px;">
-          <li
-            class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
-          >
-          <h4 style="margin-right: 10px;">Download CSV<span class="text-primary">
-            <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm"><span class="mdi mdi-download" style="font-size: 16px;"></span>
-            </a>
-           </span></h4>
-    
-            <h4 style="margin-right: 10px;">Download PDF<span class="text-primary"></span>
-              <a href="{% url 'App_Survey:export_complaints_pdf' %}" class="btn btn-danger btn-sm"><span class="mdi mdi-download" style="font-size: 16px;"></span></a>
-            </span></h4>
-          </li>
-        </ul>
+      <div class="col-xl-6">
+        <div class="card card-default" style="box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1)">
+          <div class="card-body">
+            <ul class="list-unstyled mt-2"  style="font-size: 20px;">
+              <li
+                class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
+              >
+              <h6 style="margin-right: 10px;">All Feedbacks<span class="text-primary">
+                <a href="{% url 'App_Survey:export_feedback_csv' %}" class="btn btn-success btn-sm">CSV <span class="mdi mdi-download" style="font-size: 16px;"></span>
+                </a>
+               </span>
+              </h6>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -146,9 +180,9 @@
           <li
             class="d-flex flex-wrap justify-content-between border-top py-4 text-dark"
           >
-          <h4 style="margin-right: 10px;">Solutions From Khabardabar<span class="text-primary">
+          <h6 style="margin-right: 5px;">Solutions From Khabardabar<span class="text-primary">
            
-              <a href="{% url 'App_Survey:export_solution_csv' %}" class="btn btn-success btn-sm">Download CSV</a>
+              <a href="{% url 'App_Survey:export_solution_csv' %}" class="btn btn-success btn-sm">CSV<span class="mdi mdi-download" style="font-size: 16px;"></span></a>
             </h4>
           </li>
         </ul>
