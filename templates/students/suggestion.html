@@ -21,37 +21,59 @@
                     <label for="problem_details">Feedback Details<span style="color: red;">*</span></label>
                     <textarea class="form-control" id="problem_details" name="problem_details" rows="4" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-info">
-                    Submit Feedback
+                <button type="submit" class="btn btn-info" id="submitButton">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;" id="spinner"></span>
+                    <span id="buttonText">Submit Feedback</span>
                 </button>
             </form>
         </div>
     </div>
 </div>
 <script>
-    document.getElementById('suggestionForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+document.getElementById('suggestionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-        const formData = new FormData(this);
+    const submitButton = document.getElementById('submitButton');
+    const spinner = document.getElementById('spinner');
+    const buttonText = document.getElementById('buttonText');
+    
+    // Show the spinner and hide the button text
+    buttonText.style.display = 'none';
+    spinner.style.display = 'inline-block';
+    
+    // Disable the button to prevent multiple submissions
+    submitButton.disabled = true;
 
-        fetch("{% url 'App_Survey:submit_suggestion' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect_url) {
-                window.location.href = data.redirect_url;
-            } else {
-                console.error('Error:', data.errors);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    const formData = new FormData(this);
+
+    fetch("{% url 'App_Survey:submit_suggestion' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else {
+            console.error('Error:', data.errors);
+
+            // Re-enable the button and restore button text if there's an error
+            buttonText.style.display = 'inline';
+            spinner.style.display = 'none';
+            submitButton.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+
+        // Re-enable the button and restore button text if there's an error
+        buttonText.style.display = 'inline';
+        spinner.style.display = 'none';
+        submitButton.disabled = false;
     });
+});
 </script>
 {% endblock %}
