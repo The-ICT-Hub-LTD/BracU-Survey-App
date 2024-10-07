@@ -139,8 +139,8 @@ def admin_dashboard_view(request):
     total_active_profiles = Profile.objects.filter(user__is_active=True).count()
     total_resolved_complaints = Complain.objects.filter(is_resolved=True).count()
     total_unresolved_complaints = Complain.objects.filter(is_resolved=False).count()
-    total_complain = Complain.objects.filter(is_resolved=False).count()
-    total_feedback = Complain.objects.filter(is_resolved=True).count()
+    total_complain = Complain.objects.filter(is_feedback=False).count()
+    total_feedback = Complain.objects.filter(is_feedback=True).count()
     total_complaints = total_complain + total_feedback
     current_user_email = request.user.email
 
