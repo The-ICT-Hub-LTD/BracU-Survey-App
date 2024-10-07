@@ -22,7 +22,10 @@ DEBUG = True
 # DEBUG = config('WEB_DEBUG', cast = bool)
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://bracu-khabardabarcatering.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://bracu-khabardabarcatering.up.railway.app', 
+                        'http://bracu.khabardabarcatering.com',
+                        'https://bracu.khabardabarcatering.com',
+                        ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 # Application definition
@@ -161,23 +164,23 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
-# 'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'khabardabarcater_bracu',
-#         'USER': 'khabardabarcater',
-#         'PASSWORD': '$iLoveKhabardabar@100%',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'vBcwWvGjRtFtwiJjQwEXJuQNCGtFpoEn',
+        'HOST': 'postgres.railway.internal',
+        'PORT': '5432',
+    }
+}
 
 # DATABASES = {
 #     'default': {
