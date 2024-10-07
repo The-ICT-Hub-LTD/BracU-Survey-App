@@ -41,11 +41,11 @@
                     <input type="text" class="form-control" id="invoice_no" name="invoice_no" required>
                 </div>
                 <div class="form-group">
-                    <label for="invoice_image">Upload Invoice<span style="color: red;">*</span></label>
+                    <label for="invoice_image">Upload Invoice<span style="color: red;">*</span><span style=""> <i>(Max 5MB)</i></span></label>
                     <input type="file" class="form-control-file" id="invoice_image" name="invoice_image" required>
                 </div>
                 <div class="form-group">
-                    <label for="complain_image">Upload Complain Image<span style="color: red;">*</span></label>
+                    <label for="complain_image">Upload Complain Image<span style="color: red;">*</span><span style=""> <i>(Max 5MB)</i></label>
                     <input type="file" class="form-control-file" id="complain_image" name="complain_image" required>
                 </div>
                 <button type="submit" id="submitBtn" class="btn btn-primary">
@@ -61,6 +61,22 @@
 <script>
     document.getElementById('feedbackForm').addEventListener('submit', function(event) {
         event.preventDefault();
+
+            // Validate file size
+        const invoiceImage = document.getElementById('invoice_image').files[0];
+        const complainImage = document.getElementById('complain_image').files[0];
+        const maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
+        // Check if files are selected and if they exceed 5MB
+        if (invoiceImage && invoiceImage.size > maxFileSize) {
+            alert('Invoice image size exceeds 5MB. Please upload a smaller file.');
+            return; // Prevent form submission
+        }
+
+        if (complainImage && complainImage.size > maxFileSize) {
+            alert('Complain image size exceeds 5MB. Please upload a smaller file.');
+            return; // Prevent form submission
+        }
     
         const submitBtn = document.getElementById('submitBtn');
         const submitText = document.getElementById('submitText');
@@ -68,7 +84,6 @@
         submitBtn.disabled = true;
         submitText.style.display = 'none';
         spinner.style.display = 'inline-block';
-    
         const formData = new FormData(this);
     
         fetch("{% url 'App_Survey:submit_complain' %}", {

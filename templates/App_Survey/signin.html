@@ -139,25 +139,15 @@
                       />
                     </div>
                     <div class="col-md-12">
-                      <!-- <div class="d-flex justify-content-between mb-3">
-                            <div class="custom-control custom-checkbox mr-3 mb-3">
-                              <input type="checkbox" class="custom-control-input" id="customCheck2">
-                              <label class="custom-control-label" for="customCheck2">Remember me</label>
-                            </div>
-                            <a class="text-color" href="#"> Forgot password? </a>
-                          </div> -->
-                      <button
-                        type="submit"
-                        class="btn btn-primary btn-pill mb-4"
-                      >
-                        Sign In
-                      </button>
-                      
-                    </div>
-                    <div style="display: block; background-color: #f44242; padding: 10px 20px; border-radius: 5px; color: white; width: auto; text-align: center; margin: 0 auto;">
-                      <a href="{% provider_login_url 'google' %}" style="color: white; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        <span class="mdi mdi-google" style="margin-right: 10px;"></span>Login with Google
-                      </a>
+                      <div class="d-flex justify-content-between mb-4">
+                        <button type="submit" class="btn btn-primary btn-pill">
+                          Log In
+                        </button>
+                        
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-pill" style="display: flex; align-items: center;">
+                          <span class="mdi mdi-google" style="margin-right: 10px;"></span>Login with Google
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </form>
