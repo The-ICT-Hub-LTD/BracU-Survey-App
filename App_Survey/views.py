@@ -155,7 +155,7 @@ def admin_dashboard_view(request):
 
     for category in category_counts:
         category_name = category['category']
-        if category_name:  # Check if category is not None
+        if category_name: 
             category_name = category_name.replace(' ', '_')
             if category_name in category_status_counts:
                 category_status_counts[category_name] = category['count']
@@ -264,7 +264,7 @@ def edit_complain(request, complain_id):
 
 @staff_member_required
 def resolved_feedback_list(request):
-    complaint = Complain.objects.filter(is_resolved=True).order_by('-id')
+    complaint = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
     paginator = Paginator(complaint, 10) 
     page_number = request.GET.get('page')
     complaints = paginator.get_page(page_number)
@@ -292,13 +292,11 @@ def register_user_profile(request):
         profile_form = ProfileForm(request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
-            # Create and save the UserProfile
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password1'])
             user.save()
 
-            # Get the automatically created Profile and update it with form data
-            profile = user.profile  # This profile is created by the signal
+            profile = user.profile  
             profile_form = ProfileForm(request.POST, instance=profile)
             
             if profile_form.is_valid():

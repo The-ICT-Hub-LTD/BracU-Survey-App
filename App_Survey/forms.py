@@ -32,16 +32,32 @@ class FeedbackForm(forms.ModelForm):
 class ResolveForm(forms.ModelForm):
     class Meta:
         model = Complain
-        fields = ['solution_details', 'feedback_status','is_feedback', 'resolved_image', 'resolved_at']
+        fields = ['solution_details', 'feedback_status', 'is_feedback', 'resolved_image', 'resolved_at']
         widgets = {
             'solution_details': forms.Textarea(attrs={'class': 'form-control styled-textarea'}),
             'is_feedback': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'feedback_status': forms.Select(attrs={'class': 'form-control custom-select'}),
             'resolved_image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-            'resolved_at': forms.DateInput(
-                attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'form-control'}
+            'resolved_at': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control'
+                },
+                format='%Y-%m-%dT%H:%M'
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.resolved_at:
+            self.fields['resolved_at'].initial = self.instance.resolved_at.strftime('%Y-%m-%dT%H:%M')
+
+    def clean_resolved_at(self):
+        resolved_at = self.cleaned_data['resolved_at']
+        if resolved_at:
+            return resolved_at
+        else:
+            return None 
 
 class ProfileForm(forms.ModelForm):
     class Meta:

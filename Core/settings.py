@@ -171,6 +171,7 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 #     }
 # }
 
+# ## POSTGRESQL ##
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -182,6 +183,7 @@ DATABASES = {
     }
 }
 
+# ## MYSQL ##
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -289,4 +291,24 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ### Cross-site request forgery(CSRF) protection
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+
+
+# # S3 BUCKETS CONFIG end
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# AWS_ACCESS_KEY_ID = 'AKIAUHXSE3PCCFKMVP7I'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'meherbysara'
+# AWS_S3_SIGNATURE_NAME = 's3v4',
+# AWS_S3_REGION_NAME = 'ap-southeast-1'
+
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',
+# }
+
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# AWS_S3_VERITY = True
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 

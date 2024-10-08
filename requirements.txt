@@ -93,3 +93,8 @@ psycopg2-binary
 # mysqlclient
 
 gunicorn
+
+
+# boto3
+# botocore
+# django-storages
