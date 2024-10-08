@@ -22,13 +22,13 @@ All Feedbacks
             <tr>
                 <th>SL</th>
                 <th>Name</th>
-                <th>UID</th>
-                <th>Feedbacks</th>
-                <th>Images</th>
+                <th>ID</th>
+                <!-- <th>Feedbacks</th> -->
+                <th>Complain Image</th>
                 <th>Status</th>
                 <th>Issued</th>
-                <th>Solutions</th>
-                <th>Link</th>
+                <!-- <th>Solution  </th> -->
+                <th>Resolved Image</th>
                 <th>Resolved At</th>
                 <th>View</th>
               <th></th>
@@ -41,17 +41,17 @@ All Feedbacks
                 <td>{{ forloop.counter }}</td>
                 <td>{{ complain.student_name }}</td>
                 <td>{{ complain.student_id }}</td>
-                <td>{{ complain.problem_details | truncatechars:10  }}</td>
+                <!-- <td>{{ complain.problem_details | truncatechars:10  }}</td> -->
                 <td style="text-align: center;">
                     {% if complain.complain_image %}
                         <span class="mdi mdi-image-multiple large" style="cursor: pointer;" onclick="viewImage('{{ complain.complain_image.url }}')" ></span>
                     {% else %}
-                        No image
+                        Feedback
                     {% endif %}
                 </td>
                 <td>{{ complain.feedback_status }}</td>
                 <td>{{ complain.submitted_at }}</td>
-                <td>{{ complain.solution_details | truncatechars:10}}</td>
+                <!-- <td>{{ complain.solution_details | truncatechars:10}}</td> -->
                 <td style="text-align: center;">
                     {% if complain.resolved_image %}
                         <span class="mdi mdi-image-multiple large" style="cursor: pointer;" onclick="viewImage('{{ complain.resolved_image.url }}')" ></span>
@@ -69,8 +69,8 @@ All Feedbacks
                       onclick="viewComplainDetails(
                           '{{ complain.student_name }}', 
                           '{{ complain.student_id }}', 
-                          '{{ complain.problem_details }}', 
-                          {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
+                          '{{ complain.solution_details }}', 
+                          {% if complain.resolved_image %}'{{ complain.resolved_image.url }}'{% else %}null{% endif %}, 
                           '{{ complain.submitted_at }}', 
                           '{{ complain.feedback_status }}')">
                       View
@@ -130,14 +130,15 @@ All Feedbacks
           </button>
         </div>
         <div class="modal-body">
-          <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-          <p><strong>Student ID:</strong> <span id="modalStudentID"></span></p>
-          <p><strong>Problem Details:</strong> <span id="modalProblemDetails"></span></p>
-          <p><strong>Complaint Image:</strong> 
+          <p><strong>Name:</strong> <span id="modalStudentName"></span></p>
+          <p><strong>ID:</strong> <span id="modalStudentID"></span></p>
+          <p><strong>Resolved Details:</strong> <span id="modalProblemDetails"></span></p>
+          <p><strong>Resolved Image:</strong> 
             <img id="modalComplainImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
             <span id="modalComplainImagePlaceholder"></span>
           </p>
-          <p><strong>Submitted At:</strong> <span id="modalSubmittedAt"></span></p>
+          <br>
+          <p><strong>Resolved At:</strong> <span id="modalResolvedAt"></span></p>
           <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus"></span></p>
         </div>
         <div class="modal-footer">
@@ -169,7 +170,7 @@ All Feedbacks
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel">Update Feedbacks</h5>
+              <h5 class="modal-title" id="editModalLabel">Updated Feedbacks</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
@@ -204,21 +205,22 @@ All Feedbacks
     }
 
     // View Modal
-    function viewComplainDetails(student_name, student_id, problem_details, complain_image_url, submitted_at,   feedback_status) {
+    function viewComplainDetails(student_name, student_id, solution_details, resolved_image, resolved_at,   feedback_status) {
     document.getElementById('modalStudentName').textContent = student_name;
     document.getElementById('modalStudentID').textContent = student_id;
-    document.getElementById('modalProblemDetails').textContent = problem_details;
+    document.getElementById('modalProblemDetails').textContent = solution_details;
     
     const modalComplainImage = document.getElementById('modalComplainImage');
-    if (complain_image_url && complain_image_url !== "None") {
-      modalComplainImage.src = complain_image_url;
+    if (resolved_image && resolved_image !== "None") {
+      modalComplainImage.src = resolved_image;
       modalComplainImage.style.display = "block"; 
     } else {
       modalComplainImage.style.display = "none"; 
       document.getElementById('modalComplainImagePlaceholder').textContent = "No Image Available";
     }
 
-    document.getElementById('modalSubmittedAt').textContent = submitted_at;
+    // document.getElementById('modalSubmittedAt').textContent = submitted_at;
+    document.getElementById('modalResolvedAt').textContent = resolved_at;
     document.getElementById('modalFeedbackStatus').textContent = feedback_status;
   }
 </script>

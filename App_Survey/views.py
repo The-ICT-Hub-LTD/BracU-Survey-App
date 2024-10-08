@@ -48,6 +48,7 @@ def submit_complain(request):
                     f"Invoice Number: {complain.invoice_no}\n" \
                     f"Feedback Details: {complain.problem_details}\n"                              
             recipients = ['testnetworkeverything@gmail.com','shovonmufrid98@gmail.com']
+            # recipients = ['soyeb.ahmed@bracu.ac.bd', 'farzana.faiza@bracu.ac.bd', 'sajedul.karim@bracu.ac.bd', 'ershad.ahmed@bracu.ac.bd', 'sm.shahidul@bracu.ac.bd', 'mehdi.mahboob@bracu.ac.bd', 'testnetworkeverything@gmail.com']
             
             # Send email
             send_mail(
