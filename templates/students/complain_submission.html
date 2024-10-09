@@ -1,0 +1,97 @@
+{% extends 'students/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complain Submission Complete!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 100px;
+            text-align: center;
+        }
+        .success-message {
+            color: #28a745;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .back-home-btn {
+            margin-top: 5px;
+        }
+        .spinner-border {
+            display: none;
+        }
+        .solution-info {
+            margin-top: 5px;
+            padding: 20px;
+            background-color: #f9fafc;
+            border-left: 5px solid #28a745;;
+            text-align: left;
+        }
+        .solution-info h6 {
+            color: #28a745;
+            font-size: 16px;
+        }
+        .solution-steps {
+            margin-top: 5px;
+            text-align: left;
+        }
+        .solution-steps ol {
+            padding-left: 20px;
+            font-size: 16px;
+        }
+        .solution-steps ol li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card p-3 shadow">
+            <div class="card-headers">
+                <a href="{% url 'App_Survey:home' %}"><img src="{% static 'Img/KDC-Logo.webp' %}" alt="Logo" class="header-logo"></a>
+            </div>
+            <h2 class="success-message">Your Complain has been Successfully Submitted!</h2>
+            <p><i>We will get back to you shortly.</i></p>
+
+            <div class="solution-info">
+                <h6>If you need immediate assistance:</h6>
+                <p>Contact any of our service counters for an immediate solution. The solution includes the following steps:</p>
+                <div class="solution-steps">
+                    <ol>
+                        <li><strong>Replace</strong> the food with your preferred choice.</li>
+                        <li><strong>Consume</strong> the food at any time convenient to you.</li>
+                        <li><strong>Refund</strong> if the service does not meet your expectations.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <button id="backHome" class="btn btn-primary back-home-btn">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Back to Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("backHome").addEventListener("click", function() {
+            var button = this;
+            var spinner = button.querySelector(".spinner-border");
+            spinner.style.display = "inline-block"; 
+            button.disabled = true;  
+
+            setTimeout(function() {
+                window.location.href = "/";  
+            }, 2000);  
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

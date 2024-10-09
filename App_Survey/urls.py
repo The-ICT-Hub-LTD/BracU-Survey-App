@@ -10,6 +10,7 @@ urlpatterns = [
     path('resolve-complain/<int:complain_id>/', views.resolve_complain, name='resolve_complain'),
     path('search-resolved/', views.search_resolved_complain, name='search_resolved_complain'),
     path('submission-complete/', views.submission_complete, name='submission_complete'),
+    path('complain-submission/', views.complain_submission, name='complain_submission'),
     # path('survey/admin/', views.signin_user, name='signin'),
     path('admin-login/', views.admin_login_view, name='admin_login'),
     path('dashboard/', views.admin_dashboard_view, name='admin_dashboard'),

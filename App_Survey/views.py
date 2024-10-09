@@ -61,7 +61,7 @@ def submit_complain(request):
             # except:
             #     pass
 
-            return JsonResponse({'redirect_url': reverse('App_Survey:submission_complete')})
+            return JsonResponse({'redirect_url': reverse('App_Survey:complain_submission')})
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     
@@ -105,6 +105,9 @@ def search_resolved_complain(request):
 
 def submission_complete(request):
     return render(request, 'students/submission_complete.html')
+
+def complain_submission(request):
+    return render(request, 'students/complain_submission.html')
 
 
 

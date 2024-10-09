@@ -95,6 +95,7 @@ psycopg2-binary
 gunicorn
 
 
-# boto3
-# botocore
-# django-storages
+boto3
+botocore
+django-storages
+whitenoise
