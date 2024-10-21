@@ -48,6 +48,16 @@
                   <span class="nav-text">All Resolved</span>
               </a>
           </li>
+
+
+          <li class="section-title">Settings</li>
+
+          <li class="{% if request.resolver_match.url_name == 'system_settings' %}active{% endif %}">
+            <a class="sidenav-item-link" href="{% url 'App_Survey:system_settings' %}">
+                <i class="mdi mdi-settings-outline"></i>
+                <span class="nav-text">System Panel</span>
+            </a>
+          </li>
   
       </ul>
   </div>

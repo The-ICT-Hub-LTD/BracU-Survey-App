@@ -99,3 +99,5 @@ boto3
 botocore
 django-storages
 whitenoise
+django-model-utils
+s3transfer

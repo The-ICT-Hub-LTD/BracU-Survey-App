@@ -29,6 +29,8 @@ urlpatterns = [
     path('feedbacks/export/csv/', views.export_feedback_csv, name='export_feedback_csv'),
     path('solutions/export/csv/', views.export_solution_csv, name='export_solution_csv'),
     path('complaints/export/pdf/', views.export_complaints_pdf, name='export_complaints_pdf'),
+    # path('toggle_shutdown/', views.toggle_shutdown, name='toggle_shutdown'),
+    path('system-settings/', views.system_settings, name='system_settings'), 
     # path('accounts/', include('allauth.urls')),
     
 ]
