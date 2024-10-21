@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 import re
+from django.utils import timezone
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -138,3 +139,20 @@ class Complain(models.Model):
             self.is_resolved = False
         super().save(*args, **kwargs)
 
+class SiteSettings(models.Model):
+    is_shutdown = models.BooleanField(default=False)
+    shutdown_start_time = models.TimeField(blank=True, null=True)
+    shutdown_end_time = models.TimeField(blank=True, null=True)
+
+    
+    def check_and_update_shutdown_status(self):
+        """Checks the current time and updates the shutdown status accordingly."""
+        current_time = timezone.now().time()
+        if self.shutdown_start_time <= current_time or current_time < self.shutdown_end_time:
+            self.is_shutdown = True
+        else:
+            self.is_shutdown = False
+        self.save()
+    
+    def __str__(self):
+        return f"Shutdown: {'On' if self.is_shutdown else 'Off'} - {self.shutdown_start_time} - {self.shutdown_end_time}"

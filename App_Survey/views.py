@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
-from .models import Complain, Profile, UserProfile
+from .models import Complain, Profile, UserProfile, SiteSettings
 from .forms import ComplainForm, ResolveForm, FeedbackForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
@@ -26,12 +26,21 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from openpyxl import Workbook
 from Core.settings import DEFAULT_FROM_EMAIL
+from django.utils import timezone 
 
-
+# Student Home 
 def home(request):
+    system_settings = SiteSettings.objects.first()
+    if system_settings and system_settings.is_shutdown:
+        return render(request, 'App_Survey/maintenance.html')
     return render(request, 'students/home.html')
 
 def submit_complain(request):
+    # For Sutdown System
+    system_settings = SiteSettings.objects.first()
+    if system_settings and system_settings.is_shutdown:
+        return render(request, 'App_Survey/maintenance.html') 
+    
     if request.method == 'POST':
         form = ComplainForm(request.POST, request.FILES)
         if form.is_valid():
@@ -47,7 +56,7 @@ def submit_complain(request):
                     f"Complain Category : {complain.category}\n" \
                     f"Invoice Number: {complain.invoice_no}\n" \
                     f"Feedback Details: {complain.problem_details}\n"                              
-            recipients = ['testnetworkeverything@gmail.com','shovonmufrid98@gmail.com']
+            recipients = ['testnetworkeverything@gmail.com']
             # recipients = ['soyeb.ahmed@bracu.ac.bd', 'farzana.faiza@bracu.ac.bd', 'sajedul.karim@bracu.ac.bd', 'ershad.ahmed@bracu.ac.bd', 'sm.shahidul@bracu.ac.bd', 'mehdi.mahboob@bracu.ac.bd', 'testnetworkeverything@gmail.com']
             
             # Send email
@@ -173,7 +182,6 @@ def admin_dashboard_view(request):
         'category_status_counts': category_status_counts,
         'total_complain': total_complain,
         'total_feedback': total_feedback,
-
     }
 
     return render(request, 'App_Survey/dashboard.html', context)
@@ -183,7 +191,6 @@ def signout_user(request):
      logout(request)
      messages.warning(request, "You are Logged Out")
      return HttpResponseRedirect(reverse('App_Survey:admin_login'))
-
 
 @staff_member_required
 def complaint_list(request):
@@ -490,3 +497,34 @@ def export_complaints_pdf(request):
     p.save()
 
     return response
+
+
+
+# ############ SYSTEM SETTINGS ############
+@staff_member_required
+def system_settings(request):
+    system_settings = SiteSettings.objects.first()
+
+    # Automatically check and update shutdown status based on time
+    system_settings.check_and_update_shutdown_status()
+
+    current_time = timezone.now()
+
+    if request.method == 'POST':
+        if 'shutdown' in request.POST:
+            system_settings.is_shutdown = True
+        elif 'resume' in request.POST:
+            system_settings.is_shutdown = False
+        system_settings.save()
+
+    return render(request, 'App_Survey/system.html', {
+        'system_settings': system_settings,
+        'current_time': current_time
+    })
+
+# @staff_member_required  
+# def toggle_shutdown(request):
+#     site_settings, created = SiteSettings.objects.get_or_create(id=1)
+#     site_settings.is_shutdown = not site_settings.is_shutdown
+#     site_settings.save()
+#     return redirect('App_Survey:system_settings')

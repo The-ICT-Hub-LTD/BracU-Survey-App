@@ -172,7 +172,19 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 #     }
 # }
 
-# POSTGRESQL ##
+# POSTGRESQL Test Server ##
+# DATABASES = {
+# 'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'bracu_khabardabar',
+#         'USER': 'sadmin',
+#         'PASSWORD': 'sadmin123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+########## POSTGRESQL Main Server ##
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
