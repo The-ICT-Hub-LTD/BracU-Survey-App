@@ -505,8 +505,7 @@ def export_complaints_pdf(request):
 def system_settings(request):
     system_settings = SiteSettings.objects.first()
 
-    # Automatically check and update shutdown status based on time
-    system_settings.check_and_update_shutdown_status()
+    # system_settings.check_and_update_shutdown_status()
 
     current_time = timezone.now()
 
