@@ -18,6 +18,14 @@ class ComplainForm(forms.ModelForm):
             raise forms.ValidationError("Student ID cannot be 12345678.")
         return student_id
     
+    def clean_invoice_no(self):
+        invoice_no = self.cleaned_data['invoice_no']
+        if not re.match(r'^\d{6}$', invoice_no):  # 6 digits validation
+            raise forms.ValidationError("Invoive No must be exactly 6 digits.")
+        if invoice_no == '123456':  # Avoid serial number
+            raise forms.ValidationError("Invoive No cannot be 123456.")
+        return invoice_no
+    
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Complain
