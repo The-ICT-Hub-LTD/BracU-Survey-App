@@ -110,25 +110,26 @@ All Feedbacks
                             {{ complain.feedback_status }}
                             </td>
                 <td>{{ complain.submitted_at }}</td>
+                
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-info btn-pill btn-sm"
+                    data-toggle="modal"
+                    data-target="#exampleModalForm"
+                    onclick="viewComplainDetails(
+                        '{{ complain.student_name }}', 
+                        '{{ complain.student_id }}', 
+                        '{{ complain.problem_details }}', 
+                        '{{ complain.invoice_no }}', 
+                        {% if complain.invoice_image %}'{{ complain.invoice_image.url }}'{% else %}null{% endif %}, 
+                        {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
+                        '{{ complain.submitted_at }}', 
+                        '{{ complain.feedback_status }}')">
+                    View
+                  </button>
+                </td>
                 {% if request.user.is_superuser %}
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-info btn-pill btn-sm"
-                      data-toggle="modal"
-                      data-target="#exampleModalForm"
-                      onclick="viewComplainDetails(
-                          '{{ complain.student_name }}', 
-                          '{{ complain.student_id }}', 
-                          '{{ complain.problem_details }}', 
-                          '{{ complain.invoice_no }}', 
-                          {% if complain.invoice_image %}'{{ complain.invoice_image.url }}'{% else %}null{% endif %}, 
-                          {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
-                          '{{ complain.submitted_at }}', 
-                          '{{ complain.feedback_status }}')">
-                      View
-                    </button>
-                  </td>
                   <td>
                     <a href="#" class="btn btn-primary btn-sm btn-pill" data-toggle="modal" data-target="#editModal"
                       onclick="openEditModal({{ complain.id }})">Solve</a>
