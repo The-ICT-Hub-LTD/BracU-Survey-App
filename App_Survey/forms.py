@@ -24,6 +24,11 @@ class ComplainForm(forms.ModelForm):
             raise forms.ValidationError("Invoive No must be exactly 6 digits.")
         if invoice_no == '123456':  # Avoid serial number
             raise forms.ValidationError("Invoive No cannot be 123456.")
+        
+        # Check if invoice_no already exists
+        if Complain.objects.filter(invoice_no=invoice_no).exists():
+            raise ValidationError("A complaint with this Invoice No already exists. Please provide a different Invoice No.")
+        
         return invoice_no
     
 class FeedbackForm(forms.ModelForm):

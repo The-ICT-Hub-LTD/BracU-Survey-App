@@ -10,6 +10,31 @@ All Feedbacks
         <h2>All Resolved Table</h2>
       </div>
       <div class="card-body">
+        <form method="GET" action="{% url 'App_Survey:resolved' %}" class="mb-3">
+          <div class="row">
+              <div class="col-md-4">
+                  <input
+                      type="text"
+                      name="student_id"
+                      class="form-control"
+                      placeholder="Search by ID"
+                      value="{{ student_id|default:'' }}"
+                  >
+              </div>
+              <div class="col-md-1" style="margin-right: 10px;">
+                  <button type="submit" class="btn btn-primary btn-sm" >Search</button>
+              </div>
+              <div class="col-md-1">
+                  <a href="{% url 'App_Survey:resolved' %}" class="btn btn-secondary btn-sm">X</a>
+              </div>
+              <div class="col-md-2">
+                <!-- <h3 style="color: white">.</h3> -->
+                <a href="{% url 'App_Survey:export_complaints_csv' %}" class="btn btn-success btn-sm">CSV Download</a>
+
+              </div>
+          </div>
+        </form>
+      
         <div class="collapse" id="collapse-data-tables">
           <pre class="language-html mb-4"></pre>
         </div>
@@ -71,6 +96,11 @@ All Feedbacks
                           '{{ complain.student_id }}', 
                           '{{ complain.solution_details }}', 
                           {% if complain.resolved_image %}'{{ complain.resolved_image.url }}'{% else %}null{% endif %}, 
+                          '{{ complain.category }}', 
+                          '{{ complain.problem_details }}', 
+                          '{{ complain.invoice_no }}', 
+                          {% if complain.invoice_image %}'{{ complain.invoice_image.url }}'{% else %}null{% endif %},  
+                          {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
                           '{{ complain.submitted_at }}', 
                           '{{ complain.feedback_status }}')">
                       View
@@ -124,7 +154,7 @@ All Feedbacks
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalFormTitle">Feedback Details</h5>
+          <h5 class="modal-title" id="exampleModalFormTitle">Resolved Details</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
@@ -134,10 +164,23 @@ All Feedbacks
           <p><strong>ID:</strong> <span id="modalStudentID"></span></p>
           <p><strong>Resolved Details:</strong> <span id="modalProblemDetails"></span></p>
           <p><strong>Resolved Image:</strong> 
-            <img id="modalComplainImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
+            <img id="modalComplainImage" src="" alt="Resolved Image" style="max-width: 100%; display: none;">
             <span id="modalComplainImagePlaceholder"></span>
           </p>
+          <hr>
+          <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+          <p><strong>Problem Details:</strong> <span id="modalProblem"></span></p>
+          <p><strong>Invoice No:</strong> <span id="modalInvoice"></span></p>
+          <p><strong>Invoice Image:</strong> 
+            <img id="modalInvoiceImage" src="" alt="Invoice Image" style="max-width: 100%; display: none;">
+            <span id="modalInvoiceImagePlaceholder"></span>
+          </p>
           <br>
+          <p><strong>Complain Image:</strong> 
+            <img id="modalProblemImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
+            <span id="modalProblemPlaceholder"></span>
+          </p>
+          <hr>
           <p><strong>Resolved At:</strong> <span id="modalResolvedAt"></span></p>
           <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus"></span></p>
         </div>
@@ -205,10 +248,11 @@ All Feedbacks
     }
 
     // View Modal
-    function viewComplainDetails(student_name, student_id, solution_details, resolved_image, resolved_at,   feedback_status) {
+    function viewComplainDetails(student_name, student_id, solution_details, resolved_image, category, problem_details, invoice_no, invoice_image, complain_image, resolved_at, feedback_status) {
     document.getElementById('modalStudentName').textContent = student_name;
     document.getElementById('modalStudentID').textContent = student_id;
     document.getElementById('modalProblemDetails').textContent = solution_details;
+
     
     const modalComplainImage = document.getElementById('modalComplainImage');
     if (resolved_image && resolved_image !== "None") {
@@ -218,6 +262,27 @@ All Feedbacks
       modalComplainImage.style.display = "none"; 
       document.getElementById('modalComplainImagePlaceholder').textContent = "No Image Available";
     }
+    document.getElementById('modalCategory').textContent = category;
+    document.getElementById('modalProblem').textContent = problem_details;
+    document.getElementById('modalInvoice').textContent = invoice_no;
+
+    const modalInvoiceImage = document.getElementById('modalInvoiceImage');
+      if (invoice_image && invoice_image !== "None") {
+        modalInvoiceImage.src = invoice_image;
+        modalInvoiceImage.style.display = "block"; 
+      } else {
+        modalInvoiceImage.style.display = "none"; 
+        document.getElementById('modalInvoiceImagePlaceholder').textContent = "No Image Available";
+      }
+
+    const modalProblemImage = document.getElementById('modalProblemImage');
+      if (complain_image && complain_image !== "None") {
+        modalProblemImage.src = complain_image;
+        modalProblemImage.style.display = "block"; 
+      } else {
+        modalProblemImage.style.display = "none"; 
+        document.getElementById('modalProblemPlaceholder').textContent = "No Image Available";
+      }
 
     // document.getElementById('modalSubmittedAt').textContent = submitted_at;
     document.getElementById('modalResolvedAt').textContent = resolved_at;

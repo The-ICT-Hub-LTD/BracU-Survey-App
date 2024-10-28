@@ -39,6 +39,7 @@
                 <div class="form-group">
                     <label for="invoice_no">Invoice No.<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="invoice_no" name="invoice_no" title="Invoice No. must be 6 digits" maxlength="6" pattern="\d{6}" required>
+                    <div class="invalid-feedback" id="invoice_no_error" style="color: red; display: none;"></div>
                 </div>
                 <div class="form-group">
                     <label for="invoice_image">Upload Invoice<span style="color: red;">*</span><span style=""> <i>(Max 5MB)</i></span></label>
@@ -102,6 +103,19 @@
                 submitText.style.display = 'inline';
                 spinner.style.display = 'none';
                 console.error('Error:', data.errors);
+                if (data.errors) {
+                    // Clear previous errors
+                    document.querySelectorAll('.invalid-feedback').forEach(el => el.style.display = 'none');
+
+                    // Display new errors
+                    for (const [field, messages] of Object.entries(data.errors)) {
+                        const errorElement = document.getElementById(`${field}_error`);
+                        if (errorElement) {
+                            errorElement.textContent = messages.join(", ");
+                            errorElement.style.display = 'block';
+                        }
+                    }
+                }
             }
         })
         .catch(error => {

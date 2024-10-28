@@ -56,7 +56,8 @@ def submit_complain(request):
                     f"Complain Category : {complain.category}\n" \
                     f"Invoice Number: {complain.invoice_no}\n" \
                     f"Feedback Details: {complain.problem_details}\n"                              
-            recipients = ['testnetworkeverything@gmail.com']
+            recipients = ['']
+            # recipients = ['testnetworkeverything@gmail.com']
             # recipients = ['soyeb.ahmed@bracu.ac.bd', 'farzana.faiza@bracu.ac.bd', 'sajedul.karim@bracu.ac.bd', 'ershad.ahmed@bracu.ac.bd', 'sm.shahidul@bracu.ac.bd', 'mehdi.mahboob@bracu.ac.bd', 'testnetworkeverything@gmail.com']
             
             # Send email
@@ -199,7 +200,7 @@ def complaint_list(request):
     # Get filter inputs
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
-    student_id = request.GET.get('student_id')
+    search_id = request.GET.get('search_id')
     category = request.GET.get('category') 
 
     # Filter by date range
@@ -212,8 +213,8 @@ def complaint_list(request):
             pass 
 
     # Filter by student_id
-    if student_id:
-        complaints = complaints.filter(student_id__icontains=student_id)
+    if search_id:
+        complaints = complaints.filter(Q(student_id__icontains=search_id) | Q(invoice_no__icontains=search_id))
 
     # Filter by category
     # if category and category != "None":
@@ -274,12 +275,19 @@ def edit_complain(request, complain_id):
 
 @staff_member_required
 def resolved_feedback_list(request):
-    complaint = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
+    complaint = Complain.objects.filter(is_resolved=True).order_by('-id')
+
+    # Get the student_id from the request for filtering
+    student_id = request.GET.get('student_id')
+    if student_id:
+        complaint = complaint.filter(student_id__icontains=student_id)
+
+    # Pagination
     paginator = Paginator(complaint, 10) 
     page_number = request.GET.get('page')
     complaints = paginator.get_page(page_number)
-    
-    return render(request, 'App_Survey/feedback_solved.html', {'complaints': complaints, })
+
+    return render(request, 'App_Survey/feedback_solved.html', {'complaints': complaints, 'student_id': student_id})
 
 
 def complain_details(request, pk):
