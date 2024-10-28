@@ -382,7 +382,7 @@ def export_complaints_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="complaints.csv"'
     writer = csv.writer(response)
-    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued'])
+    writer.writerow(['SL', 'Name', 'ID', 'Category', 'Complain', 'Invoice No', 'Invoice Image', 'Complain Image', 'Status', 'Issued'])
 
     # Retrieve date range from the request
     start_date = request.GET.get('start_date')
@@ -406,6 +406,9 @@ def export_complaints_csv(request):
             complain.student_id,
             complain.category,
             complain.problem_details,
+            complain.invoice_no,
+            complain.invoice_image,
+            complain.complain_image,
             complain.feedback_status,
             complain.submitted_at
         ])
@@ -417,7 +420,7 @@ def export_solution_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="solution.csv"'
     writer = csv.writer(response)
-    writer.writerow(['SL', 'Name', 'UID', 'Category', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
+    writer.writerow(['SL', 'Name', 'ID', 'Category', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
 
     # Get the complaints data
     complaints = Complain.objects.filter(is_resolved=True).order_by('-resolved_at')
@@ -444,7 +447,7 @@ def export_feedback_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="feedback.csv"'
     writer = csv.writer(response)
-    writer.writerow(['SL', 'Name', 'UID', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
+    writer.writerow(['SL', 'Name', 'ID', 'Feedback', 'Status', 'Issued', 'Solution', 'Resolved Date'])
 
     # Get the complaints data
     complaints = Complain.objects.filter(is_feedback=True).order_by('-id')
