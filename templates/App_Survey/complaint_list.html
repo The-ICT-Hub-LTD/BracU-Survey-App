@@ -13,8 +13,8 @@ All Feedbacks
         <form method="GET" id="filter-form" action="{% url 'App_Survey:complaint_list' %}">
           <div class="row mb-3">
               <div class="col-md-2">
-                <label for="student-id">Student ID:</label>
-              <input type="text" class="form-control" id="student-id" name="student_id" placeholder="Search by Student ID" value="{{ request.GET.student_id }}">
+                <label for="student-id">Search by ID/Invoice</label>
+              <input type="text" class="form-control" id="student-id" name="search_id" placeholder="Search id/invoice" value="{{ request.GET.search_id }}">
               </div>
               <div class="col-md-2">
                 <label for="category">Category:</label>
@@ -64,13 +64,14 @@ All Feedbacks
                 <!-- <th>Name</th> -->
                 <th>Feedback</th>
                 <th>Category</th>
+                <th>Invoice</th>
                 <!-- <th>Feedback</th> -->
                 <th>Inv. Image</th>
                 <th>Complain Image</th>
                 <th>Status</th>
                 <th>Issued</th>
+                <th>View</th>
                 {% if request.user.is_superuser %}
-                  <th>View</th>
                   <th>Action</th>
                 {% endif %}
               <th></th>
@@ -83,6 +84,7 @@ All Feedbacks
                 <td>{{ complain.student_id }}</td>
                 <td>{{ complain.is_feedback }}</td>
                 <td>{{ complain.category }}</td>
+                <td>{{ complain.invoice_no }}</td>
                 <!-- <td  style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ complain.problem_details | truncatechars:10  }}</td> -->
                 <td style="text-align: center;">
                     {% if complain.invoice_image %}
@@ -183,7 +185,7 @@ All Feedbacks
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalFormTitle">Feedback Details</h5>
+        <h5 class="modal-title" id="exampleModalFormTitle">Complain Details</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -193,15 +195,17 @@ All Feedbacks
         <p><strong>Student ID:</strong> <span id="modalStudentID"></span></p>
         <p><strong>Problem Details:</strong> <span id="modalProblemDetails"></span></p>
         <p><strong>Invoice No.:</strong> <span id="modalInvoiceNo"></span></p>
+        <hr>
         <p><strong>Invoice Image:</strong> 
           <img id="modalInvoiceImage" src="" alt="Invoice Image" style="max-width: 100%; display: none;">
           <span id="modalInvoiceImagePlaceholder"></span>
         </p>
-        <br>
+        <hr>
         <p><strong>Complaint Image:</strong> 
           <img id="modalComplainImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
           <span id="modalComplainImagePlaceholder"></span>
         </p>
+        <hr>
         <br>
         <p><strong>Submitted At:</strong> <span id="modalSubmittedAt"></span></p>
         <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus"></span></p>
