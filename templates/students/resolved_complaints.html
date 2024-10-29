@@ -33,74 +33,51 @@
 </div>
 
 {% if complaints %}
-<div class="container mt-2 ">
+<div class="container mt-2">
     <div class="card">
-        <div class="table-responsive">
-            <div style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead>     
-                        <tr>
-                            <th style="text-align: center; ">SL</th>
-                            <!-- <th style="text-align: center;">Feedback</th>
-                            <th style="text-align: center;">Image</th> -->
-                            <th style="text-align: center;">Status</th>
-                            <th style="text-align: center;">Issued</th>
-                            <th style="text-align: center;">Solution Details</th>
-                            <th style="text-align: center;">Solved At</th>
-                            <th style="text-align: center;">Solved Attachemnt</th>
-                            <!-- <th style="text-align: center;">Action</th> -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for complaint in complaints %}
-                        <tr style="">
-                            <td style="text-align: center;">{{ forloop.counter }}</td>
-                            <!-- <td>{{ complaint.problem_details | truncatechars:10 }}</td>
-                            <td style="text-align: center;">
-                                {% if complaint.complain_image %}
-                                    <i class="fas fa-link" style="cursor: pointer;" onclick="viewImage('{{ complaint.complain_image.url }}')"></i>
-                                {% else %}
-                                    No image
-                                {% endif %}
-                            </td> -->
-                            <td style="text-align: center; color:
-                            {% if complaint.feedback_status == 'Pending' %}
-                                red
-                            {% elif complaint.feedback_status == 'Solved' %}
-                                green
-                            {% elif complaint.feedback_status == 'On Process' %}
-                                blue
-                            {% endif %}
-                            ">
-                            {{ complaint.feedback_status }}
-                            </td>
-                            <td style="text-align: center;">{{ complaint.submitted_at }}</td>
-                            <td>{{ complaint.solution_details | truncatechars:20 }}</td>
-                            <td style="text-align: center;">{{ complaint.resolved_at }}</td>
-                            <td style="text-align: center;">
+        <div class="card-body">
+            <div style="max-height: 400px; overflow-y: auto;">
+                <ul class="list-group">
+                    {% for complaint in complaints %}
+                        <li class="list-group-item d-flex flex-column align-items-start">
+                            <div class="mb-2"><strong>SL:</strong> {{ forloop.counter }}</div>
+                            <div><strong>Status:</strong> 
+                                <span style="color:
+                                    {% if complaint.feedback_status == 'Pending' %}
+                                        red
+                                    {% elif complaint.feedback_status == 'Solved' %}
+                                        green
+                                    {% elif complaint.feedback_status == 'On Process' %}
+                                        blue
+                                    {% endif %}
+                                ">
+                                    {{ complaint.feedback_status }}
+                                </span>
+                            </div>
+                            <div><strong>Issued:</strong> {{ complaint.submitted_at }}</div>
+                            <div><strong>Solution Details:</strong> {{ complaint.solution_details }}</div>
+                            <div><strong>Solved At:</strong> {{ complaint.resolved_at }}</div>
+                            <div><strong>Solved Attachment:</strong>
                                 {% if complaint.resolved_image %}
                                     <i class="fas fa-link" style="cursor: pointer;" onclick="viewImage('{{ complaint.resolved_image.url }}')"></i>
                                 {% else %}
                                     No Files
                                 {% endif %}
-                            </td>
-                            <!-- <td style="text-align: center;"><button class="btn btn-primary">View</button></td> -->
-
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                    {% if student_id %}
-                    <div class="alert alert-warning mt-4" role="alert" style="text-align: center;">
-                        No feedback found for this Student UID.
-                    </div>
-                    {% endif %}
-                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-        <div>
+        </div>
     </div>
 </div>
+{% else %}
+    {% if student_id %}
+    <div class="alert alert-warning mt-4 text-center" role="alert">
+        No feedback found for this Student UID.
+    </div>
+    {% endif %}
+{% endif %}
 
 <!-- Modal Structure -->
 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
