@@ -91,12 +91,7 @@ All Feedbacks
                     class="btn btn-info btn-pill btn-sm"
                     data-toggle="modal"
                     data-target="#exampleModalForm"
-                    onclick="viewComplainDetails(
-                        '{{ complain.student_name }}', 
-                        '{{ complain.student_id }}', 
-                        '{{ complain.problem_details }}', 
-                        '{{ complain.submitted_at }}', 
-                        '{{ complain.feedback_status }}')">
+                    onclick="viewComplainDetails({{ complain.id }})">
                     View
                   </button>
                 </td>
@@ -206,13 +201,53 @@ All Feedbacks
   }
 
     // View Modal
-    function viewComplainDetails(student_name, student_id, problem_details, submitted_at, feedback_status) {
-    document.getElementById('modalStudentName').textContent = student_name;
-    document.getElementById('modalStudentID').textContent = student_id;
-    document.getElementById('modalProblemDetails').textContent = problem_details;
-    document.getElementById('modalSubmittedAt').textContent = submitted_at;
-    document.getElementById('modalFeedbackStatus').textContent = feedback_status;
-  }
+    function viewComplainDetails(complainId) {
+        // AJAX request to fetch complain details based on complainId
+        $.ajax({
+            url: "{% url 'App_Survey:complain_detail' 0 %}".replace(0, complainId), 
+            type: "GET",
+            success: function(response) {
+                // Reset modal fields
+                document.getElementById('modalStudentName').textContent = 'N/A';
+                document.getElementById('modalStudentID').textContent = 'N/A';
+                document.getElementById('modalProblemDetails').textContent = 'N/A';
+                // document.getElementById('modalInvoiceNo').textContent = 'N/A';
+                // document.getElementById('modalInvoiceImage').style.display = 'none';
+                // document.getElementById('modalInvoiceImage').src = '';
+                // document.getElementById('modalComplainImage').style.display = 'none';
+                // document.getElementById('modalComplainImage').src = '';
+                document.getElementById('modalSubmittedAt').textContent = 'N/A';
+                document.getElementById('modalFeedbackStatus').textContent = 'N/A';
+
+                // Set modal fields with new data
+                const data = response.data; // Assume the response contains a `data` object with the complain details
+
+                document.getElementById('modalStudentName').textContent = data.student_name || 'N/A';
+                document.getElementById('modalStudentID').textContent = data.student_id || 'N/A';
+                document.getElementById('modalProblemDetails').textContent = data.problem_details || 'N/A';
+                // document.getElementById('modalInvoiceNo').textContent = data.invoice_no || 'N/A';
+
+                // if (data.invoice_image) {
+                //     document.getElementById('modalInvoiceImage').src = data.invoice_image;
+                //     document.getElementById('modalInvoiceImage').style.display = 'block';
+                // }
+
+                // if (data.complain_image) {
+                //     document.getElementById('modalComplainImage').src = data.complain_image;
+                //     document.getElementById('modalComplainImage').style.display = 'block';
+                // }
+
+                document.getElementById('modalSubmittedAt').textContent = data.submitted_at || 'N/A';
+                document.getElementById('modalFeedbackStatus').textContent = data.feedback_status || 'N/A';
+
+                // Show modal
+                $('#viewComplainModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching complain details:", error);
+            }
+        });
+    }
 
 
 </script>
