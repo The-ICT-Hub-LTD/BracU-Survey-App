@@ -119,15 +119,7 @@ All Feedbacks
                     class="btn btn-info btn-pill btn-sm"
                     data-toggle="modal"
                     data-target="#exampleModalForm"
-                    onclick="viewComplainDetails(
-                        '{{ complain.student_name }}', 
-                        '{{ complain.student_id }}', 
-                        '{{ complain.problem_details }}', 
-                        '{{ complain.invoice_no }}', 
-                        {% if complain.invoice_image %}'{{ complain.invoice_image.url }}'{% else %}null{% endif %}, 
-                        {% if complain.complain_image %}'{{ complain.complain_image.url }}'{% else %}null{% endif %}, 
-                        '{{ complain.submitted_at }}', 
-                        '{{ complain.feedback_status }}')">
+                    onclick="viewComplainDetails({{ complain.id }})">
                     View
                   </button>
                 </td>
@@ -181,39 +173,28 @@ All Feedbacks
   </div>
 
 <!--============== View Modal ==============-->
-<div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalFormTitle">Complain Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
+<!-- Modal HTML structure -->
+<div class="modal fade" id="viewComplainModal" tabindex="-1" aria-labelledby="viewComplainModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="viewComplainModalLabel">Complain Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p><strong>Student Name:</strong> <span id="modalStudentName">N/A</span></p>
+              <p><strong>Student ID:</strong> <span id="modalStudentID">N/A</span></p>
+              <p><strong>Problem Details:</strong> <span id="modalProblemDetails">N/A</span></p>
+              <p><strong>Invoice No:</strong> <span id="modalInvoiceNo">N/A</span></p>
+              <p><strong>Invoice Image:</strong> <img id="modalInvoiceImage" src="" alt="Invoice Image" style="display: none; max-width: 100%;"/></p>
+              <p><strong>Complain Image:</strong> <img id="modalComplainImage" src="" alt="Complain Image" style="display: none; max-width: 100%;"/></p>
+              <p><strong>Submitted At:</strong> <span id="modalSubmittedAt">N/A</span></p>
+              <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus">N/A</span></p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
       </div>
-      <div class="modal-body">
-        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-        <p><strong>Student ID:</strong> <span id="modalStudentID"></span></p>
-        <p><strong>Problem Details:</strong> <span id="modalProblemDetails"></span></p>
-        <p><strong>Invoice No.:</strong> <span id="modalInvoiceNo"></span></p>
-        <hr>
-        <p><strong>Invoice Image:</strong> 
-          <img id="modalInvoiceImage" src="" alt="Invoice Image" style="max-width: 100%; display: none;">
-          <span id="modalInvoiceImagePlaceholder"></span>
-        </p>
-        <hr>
-        <p><strong>Complaint Image:</strong> 
-          <img id="modalComplainImage" src="" alt="Complain Image" style="max-width: 100%; display: none;">
-          <span id="modalComplainImagePlaceholder"></span>
-        </p>
-        <hr>
-        <br>
-        <p><strong>Submitted At:</strong> <span id="modalSubmittedAt"></span></p>
-        <p><strong>Feedback Status:</strong> <span id="modalFeedbackStatus"></span></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger btn-pill" data-dismiss="modal">Close</button>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -270,33 +251,53 @@ All Feedbacks
   }
 
     // View Modal
-    function viewComplainDetails(student_name, student_id, problem_details, invoice_no, invoice_image, complain_image, submitted_at, feedback_status) {
-    document.getElementById('modalStudentName').textContent = student_name;
-    document.getElementById('modalStudentID').textContent = student_id;
-    document.getElementById('modalProblemDetails').textContent = problem_details;
-    document.getElementById('modalInvoiceNo').textContent = invoice_no;
-    
-    const modalInvoiceImage = document.getElementById('modalInvoiceImage');
-    if (invoice_image && invoice_image !== "None") {
-      modalInvoiceImage.src = invoice_image;
-      modalInvoiceImage.style.display = "block"; 
-    } else {
-      modalInvoiceImage.style.display = "none"; 
-      document.getElementById('modalInvoiceImagePlaceholder').textContent = "No Image Available";
-    }
+    function viewComplainDetails(complainId) {
+        // AJAX request to fetch complain details based on complainId
+        $.ajax({
+            url: "{% url 'App_Survey:complain_detail' 0 %}".replace(0, complainId), 
+            type: "GET",
+            success: function(response) {
+                // Reset modal fields
+                document.getElementById('modalStudentName').textContent = 'N/A';
+                document.getElementById('modalStudentID').textContent = 'N/A';
+                document.getElementById('modalProblemDetails').textContent = 'N/A';
+                document.getElementById('modalInvoiceNo').textContent = 'N/A';
+                document.getElementById('modalInvoiceImage').style.display = 'none';
+                document.getElementById('modalInvoiceImage').src = '';
+                document.getElementById('modalComplainImage').style.display = 'none';
+                document.getElementById('modalComplainImage').src = '';
+                document.getElementById('modalSubmittedAt').textContent = 'N/A';
+                document.getElementById('modalFeedbackStatus').textContent = 'N/A';
 
-    const modalComplainImage = document.getElementById('modalComplainImage');
-    if (complain_image && complain_image !== "None") {
-      modalComplainImage.src = complain_image;
-      modalComplainImage.style.display = "block"; 
-    } else {
-      modalComplainImage.style.display = "none"; 
-      document.getElementById('modalComplainImagePlaceholder').textContent = "No Image Available";
-    }
+                // Set modal fields with new data
+                const data = response.data; // Assume the response contains a `data` object with the complain details
 
-    document.getElementById('modalSubmittedAt').textContent = submitted_at;
-    document.getElementById('modalFeedbackStatus').textContent = feedback_status;
-  }
+                document.getElementById('modalStudentName').textContent = data.student_name || 'N/A';
+                document.getElementById('modalStudentID').textContent = data.student_id || 'N/A';
+                document.getElementById('modalProblemDetails').textContent = data.problem_details || 'N/A';
+                document.getElementById('modalInvoiceNo').textContent = data.invoice_no || 'N/A';
+
+                if (data.invoice_image) {
+                    document.getElementById('modalInvoiceImage').src = data.invoice_image;
+                    document.getElementById('modalInvoiceImage').style.display = 'block';
+                }
+
+                if (data.complain_image) {
+                    document.getElementById('modalComplainImage').src = data.complain_image;
+                    document.getElementById('modalComplainImage').style.display = 'block';
+                }
+
+                document.getElementById('modalSubmittedAt').textContent = data.submitted_at || 'N/A';
+                document.getElementById('modalFeedbackStatus').textContent = data.feedback_status || 'N/A';
+
+                // Show modal
+                $('#viewComplainModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching complain details:", error);
+            }
+        });
+    }
 
 
 </script>
