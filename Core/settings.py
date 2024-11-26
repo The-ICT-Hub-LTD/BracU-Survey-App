@@ -172,7 +172,7 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 #     }
 # }
 
-# ########## POSTGRESQL Test Server ##
+########## POSTGRESQL Test Server ##
 # DATABASES = {
 # 'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -184,7 +184,7 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 #     }
 # }
 
-######### POSTGRESQL Main Server ##
+########## POSTGRESQL Main Server ##
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

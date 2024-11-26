@@ -17,6 +17,7 @@ urlpatterns = [
     path('signout/', views.signout_user, name='signout'),
     path('complains/', views.complaint_list, name='complaint_list'),
     path('complains/<int:complain_id>/detail/', views.complain_detail, name='complain_detail'),
+    path('resolved/<int:complain_id>/detail/', views.resolved_detail, name='resolved_detail'),
     path('feedbacks/', views.suggestion_list, name='suggestion_list'),
     path('complaints/edit/<int:complain_id>/', views.edit_complain, name='edit_complain'),
     path('resolved/', views.resolved_feedback_list, name='resolved'),

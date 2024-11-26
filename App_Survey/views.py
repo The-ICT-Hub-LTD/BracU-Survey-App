@@ -244,6 +244,24 @@ def complain_detail(request, complain_id):
     return JsonResponse({"data": data})
 
 @staff_member_required
+def resolved_detail(request, complain_id):
+    complain = get_object_or_404(Complain, id=complain_id)
+    data = {
+        "student_name": complain.student_name,
+        "student_id": complain.student_id,
+        "problem_details": complain.problem_details,
+        "solution_details": complain.solution_details,
+        "invoice_no": complain.invoice_no,
+        "invoice_image": complain.invoice_image.url if complain.invoice_image else None,
+        "complain_image": complain.complain_image.url if complain.complain_image else None,
+        "resolved_image": complain.resolved_image.url if complain.resolved_image else None,
+        "submitted_at": complain.submitted_at.strftime("%Y-%m-%d %H:%M:%S"),
+        "resolved_at": complain.resolved_at.strftime("%Y-%m-%d %H:%M:%S"),
+        "feedback_status": complain.get_feedback_status_display(),
+    }
+    return JsonResponse({"data": data})
+
+@staff_member_required
 def suggestion_list(request):
     suggestions = Complain.objects.filter(is_feedback=True).order_by('-id')
     start_date = request.GET.get('start_date')
