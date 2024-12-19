@@ -196,6 +196,7 @@ DATABASES = {
     }
 }
 
+
 # ## MYSQL ##
 # DATABASES = {
 #     'default': {
