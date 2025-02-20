@@ -137,39 +137,55 @@ All Feedbacks
       </div>
       
       <!-- ================= Pagination ================ -->
-      <div class="card card-default align-items-end">
-        <div class="card-body">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                {% if complaints.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ complaints.previous_page_number }}" aria-label="Previous">
-                    <span aria-hidden="true" class="mdi mdi-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                {% endif %}
+          <!-- ================= Pagination ================ -->
+        <div class="card card-default align-items-end">
+          <div class="card-body">
+              <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                      <!-- Previous Page Link -->
+                      {% if complaints.has_previous %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ complaints.previous_page_number }}" aria-label="Previous">
+                                  <span aria-hidden="true" class="mdi mdi-chevron-left"></span>
+                                  <span class="sr-only">Previous</span>
+                              </a>
+                          </li>
+                      {% else %}
+                          <li class="page-item disabled">
+                              <span class="page-link" aria-hidden="true">&laquo;</span>
+                          </li>
+                      {% endif %}
 
-                {% for i in complaints.paginator.page_range %}
-                    {% if complaints.number == i %}
-                        <li class="page-item active"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
-                    {% else %}
-                        <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
+                      <!-- Current Page -->
+                      <li class="page-item active">
+                          <span class="page-link">{{ complaints.number }}</span>
+                      </li>
 
-                {% if complaints.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ complaints.next_page_number }}" aria-label="Next">
-                    <span aria-hidden="true" class="mdi mdi-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                    </a>
-                </li>
-                {% endif %}
-                </ul>
-            </nav>
+                      <!-- Next Page Link -->
+                      {% if complaints.has_next %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ complaints.next_page_number }}" aria-label="Next">
+                                  <span aria-hidden="true" class="mdi mdi-chevron-right"></span>
+                                  <span class="sr-only">Next</span>
+                              </a>
+                          </li>
+                      {% else %}
+                          <li class="page-item disabled">
+                              <span class="page-link" aria-hidden="true">&raquo;</span>
+                          </li>
+                      {% endif %}
+
+                      <!-- Final Page Link -->
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ complaints.paginator.num_pages }}" aria-label="Last">
+                              <span aria-hidden="true">Last</span>
+                              <span class="sr-only">Last</span>
+                          </a>
+                      </li>
+                  </ul>
+              </nav>
+          </div>
         </div>
-    </div>
   </div>
 
 <!--============== View Modal ==============-->
